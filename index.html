@@ -4322,33 +4322,39 @@ function intStartListen(){
   intRunning=true;
   showMicBar();
 
-  var noSpeechCount=0;
+  var lastMatchTime=0;
   intSR.onresult=(e)=>{
-    noSpeechCount=0; // reset counter saat ada suara
     let fin='',itm='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal)fin+=e.results[i][0].transcript.toLowerCase().trim()+' ';
       else itm+=e.results[i][0].transcript.toLowerCase().trim()+' ';
     }
     fin=fin.trim();itm=itm.trim();
-    setHeardTxt('"'+(itm||fin||'...')+'"');
+    const combined=fin||itm;
+    setHeardTxt('"'+combined+'"');
 
-    // Untuk suku kata pendek (<=3 huruf): cek interim juga
+    if(intEval)return;
+    if(Date.now()-lastMatchTime<800)return; // cooldown 800ms
+
     const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
-    if(!intEval){
-      // Cek interim dulu untuk suku kata pendek
-      if(itm&&target.length<=3){
-        const iTokens=itm.split(/\s+/).filter(t=>t.length>0);
-        for(let t of iTokens){
-          if(intMatch(t,target)){
-            intProsesTokens([t]);
-            return;
-          }
+
+    // Gabungkan interim + final, cek semua kemungkinan
+    const allText=[fin,itm].filter(t=>t.length>0);
+    for(const txt of allText){
+      const tokens=txt.split(/\s+/).filter(t=>t.length>0);
+      // Cek setiap token
+      for(const tok of tokens){
+        if(intMatch(tok,target)){
+          lastMatchTime=Date.now();
+          intProsesTokens([tok]);
+          return;
         }
       }
-      // Cek final result
-      if(fin){
-        intProsesTokens(fin.split(/\s+/).filter(t=>t.length>0));
+      // Cek teks penuh juga
+      if(intMatch(txt.replace(/\s+/g,''),target)){
+        lastMatchTime=Date.now();
+        intProsesTokens([txt.replace(/\s+/g,'')]);
+        return;
       }
     }
   };
@@ -4356,17 +4362,14 @@ function intStartListen(){
     if(e.error==='not-allowed'){
       intRunning=false;hideMicBar();
       setStatusTxt('⚠️ izinkan mikrofon');
-    } else if(e.error==='no-speech'){
-      noSpeechCount++;
-      // Restart lebih cepat, jangan tunggu lama
-      if(intRunning&&intCurIdx<intCurEls.length){
-        try{intSR.start();}catch(e){}
-      }
+    }
+    // error lain: restart langsung
+    if(intRunning&&intCurIdx<intCurEls.length){
+      try{intSR.start();}catch(e){}
     }
   };
   intSR.onend=()=>{
     if(intRunning&&intCurIdx<intCurEls.length){
-      // Langsung restart tanpa delay
       try{intSR.start();}catch(e){}
     }
   };
@@ -4447,19 +4450,23 @@ async function intGuruOverride(){
 
 function intMatch(heard,target){
   if(!heard||!target)return false;
-  heard=heard.replace(/[.,!?]/g,'').trim().toLowerCase();
-  target=target.replace(/[.,!?]/g,'').trim().toLowerCase();
+  heard=heard.replace(/[.,!?-]/g,'').trim().toLowerCase();
+  target=target.replace(/[.,!?-]/g,'').trim().toLowerCase();
+  if(!heard||!target)return false;
   if(heard===target)return true;
-  // Suku kata 1-2 huruf: exact atau heard mengandung target
-  if(target.length<=2){
+
+  // Vokal tunggal (a, i, u, e, o) - sangat toleran
+  if(target.length===1){
     return heard===target||heard.startsWith(target)||heard.includes(target);
   }
-  // Suku kata 3 huruf: sedikit toleransi
+  // Suku kata 2-3 huruf (ba, ca, bi, cu, dll)
   if(target.length<=3){
-    return heard===target||heard.includes(target)||intLev(heard,target)>0.6;
+    if(heard.includes(target))return true;
+    if(target.includes(heard)&&heard.length>=1)return true;
+    return intLev(heard,target)>0.55;
   }
-  // Kata panjang: toleransi lebih
-  if(heard.indexOf(target)>=0)return true;
+  // Kata 4+ huruf
+  if(heard.includes(target))return true;
   return intLev(heard,target)>0.65;
 }
 function intLev(a,b){
