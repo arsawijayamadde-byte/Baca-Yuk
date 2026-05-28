@@ -4350,7 +4350,7 @@ function intInitSR(){
   if(!SRC)return;
   intSR=new SRC();
   intSR.lang='id-ID';
-  intSR.continuous=false;
+  intSR.continuous=true;
   intSR.interimResults=true;
   intSR.maxAlternatives=8;
 }
@@ -4361,15 +4361,6 @@ function intStartListen(){
   showMicBar();
 
   var lastMatchTime=0;
-  var pendingRestart=null;
-
-  function restartSR(){
-    if(!intRunning||intCurIdx>=intCurEls.length)return;
-    if(pendingRestart)clearTimeout(pendingRestart);
-    pendingRestart=setTimeout(()=>{
-      try{intSR.abort();intSR.start();}catch(e){}
-    },80);
-  }
 
   function evalHeard(fin,itm){
     if(intEval)return;
@@ -4419,7 +4410,10 @@ function intStartListen(){
   };
 
   intSR.onend=()=>{
-    restartSR();
+    // continuous:true - restart hanya kalau berhenti tidak sengaja
+    if(intRunning&&intCurIdx<intCurEls.length){
+      setTimeout(()=>{try{intSR.start();}catch(e){}},500);
+    }
   };
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
 }
