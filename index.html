@@ -4002,6 +4002,23 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
   <button id="btn-next" class="nbtn nprimary" onclick="nextHal()">lanjut →</button>
 </div>
 <script>
+
+// ══ AUDIO UNLOCK — Chrome butuh interaksi dulu ══
+let audioUnlocked = false;
+function unlockAudio(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  // Speak kosong untuk unlock audio context
+  const u = new SpeechSynthesisUtterance('');
+  u.volume = 0;
+  window.speechSynthesis.speak(u);
+  window.speechSynthesis.cancel();
+}
+// Unlock saat pertama kali ada interaksi
+document.addEventListener('click', unlockAudio, {once: true});
+document.addEventListener('touchstart', unlockAudio, {once: true});
+document.addEventListener('keydown', unlockAudio, {once: true});
+
 let stars=0,curPrt=null,curHal=1;
 const TOT_HAL=6;
 const synth=window.speechSynthesis;
@@ -4179,6 +4196,14 @@ function wlMulai(mode){
 
   document.getElementById('welcome-screen').classList.add('hide');
   document.getElementById('beranda').style.display='block';
+  // Ucapkan sambutan setelah interaksi pertama
+  setTimeout(()=>{
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance('halo ' + intNama + '! ayo belajar!');
+    u.lang='id-ID'; u.rate=0.9; u.pitch=1.15; u.volume=1;
+    synth.speak(u);
+  }, 300);
 }
 
 // ── INTERCEPT showHal ───────────────────────────────────────────
@@ -4313,8 +4338,10 @@ function intInitSR(){
   const SRC=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SRC)return;
   intSR=new SRC();
-  intSR.lang='id-ID';intSR.continuous=true;
-  intSR.interimResults=true;intSR.maxAlternatives=5;
+  intSR.lang='id-ID';
+  intSR.continuous=false;
+  intSR.interimResults=true;
+  intSR.maxAlternatives=8;
 }
 
 function intStartListen(){
@@ -4323,6 +4350,40 @@ function intStartListen(){
   showMicBar();
 
   var lastMatchTime=0;
+  var pendingRestart=null;
+
+  function restartSR(){
+    if(!intRunning||intCurIdx>=intCurEls.length)return;
+    if(pendingRestart)clearTimeout(pendingRestart);
+    pendingRestart=setTimeout(()=>{
+      try{intSR.abort();intSR.start();}catch(e){}
+    },80);
+  }
+
+  function evalHeard(fin,itm){
+    if(intEval)return;
+    if(Date.now()-lastMatchTime<600)return;
+    const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
+    if(!target)return;
+
+    // Semua kandidat: interim per kata, final per kata, gabungan
+    const candidates=new Set();
+    [fin,itm].forEach(txt=>{
+      if(!txt)return;
+      txt.split(/\s+/).forEach(t=>{if(t)candidates.add(t);});
+      candidates.add(txt.replace(/\s+/g,''));
+      candidates.add(txt);
+    });
+
+    for(const c of candidates){
+      if(intMatch(c,target)){
+        lastMatchTime=Date.now();
+        intProsesTokens([c]);
+        return;
+      }
+    }
+  }
+
   intSR.onresult=(e)=>{
     let fin='',itm='';
     for(let i=e.resultIndex;i<e.results.length;i++){
@@ -4330,48 +4391,24 @@ function intStartListen(){
       else itm+=e.results[i][0].transcript.toLowerCase().trim()+' ';
     }
     fin=fin.trim();itm=itm.trim();
-    const combined=fin||itm;
-    setHeardTxt('"'+combined+'"');
-
-    if(intEval)return;
-    if(Date.now()-lastMatchTime<800)return; // cooldown 800ms
-
-    const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
-
-    // Gabungkan interim + final, cek semua kemungkinan
-    const allText=[fin,itm].filter(t=>t.length>0);
-    for(const txt of allText){
-      const tokens=txt.split(/\s+/).filter(t=>t.length>0);
-      // Cek setiap token
-      for(const tok of tokens){
-        if(intMatch(tok,target)){
-          lastMatchTime=Date.now();
-          intProsesTokens([tok]);
-          return;
-        }
-      }
-      // Cek teks penuh juga
-      if(intMatch(txt.replace(/\s+/g,''),target)){
-        lastMatchTime=Date.now();
-        intProsesTokens([txt.replace(/\s+/g,'')]);
-        return;
-      }
-    }
+    setHeardTxt('"'+(fin||itm)+'"');
+    // Cek interim dulu (lebih cepat)
+    if(itm)evalHeard('',itm);
+    // Lalu cek final
+    if(fin)evalHeard(fin,'');
   };
+
   intSR.onerror=(e)=>{
     if(e.error==='not-allowed'){
       intRunning=false;hideMicBar();
       setStatusTxt('⚠️ izinkan mikrofon');
+      return;
     }
-    // error lain: restart langsung
-    if(intRunning&&intCurIdx<intCurEls.length){
-      try{intSR.start();}catch(e){}
-    }
+    restartSR();
   };
+
   intSR.onend=()=>{
-    if(intRunning&&intCurIdx<intCurEls.length){
-      try{intSR.start();}catch(e){}
-    }
+    restartSR();
   };
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
 }
