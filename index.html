@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>baca yuk! — fase 1</title>
 <style>
 :root{
@@ -200,6 +200,104 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 /* FLOAT STAR */
 .int-fstar{ position:fixed; pointer-events:none; font-size:36px; z-index:700; animation:intFup 1.1s ease forwards; }
 @keyframes intFup{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120px) scale(1.5);opacity:0}}
+
+/* ══ RESPONSIVE — mobile tablet desktop ══ */
+:root {
+  --font-base: 16px;
+  --radius: 16px;
+}
+
+/* Mobile first */
+@media (max-width: 480px) {
+  body { font-size: 14px; }
+
+  .top-nav { padding: 8px 12px; gap: 8px; }
+  .logo { width: 34px; height: 34px; font-size: 16px; }
+  .appname { font-size: 15px; }
+  .appsub { font-size: 10px; }
+  .star-badge { padding: 4px 10px; font-size: 13px; }
+
+  #beranda { padding: 10px; }
+  .hero { padding: 16px; border-radius: 18px; }
+  .hero h1 { font-size: 20px; }
+  .hero p { font-size: 12px; }
+
+  .prt-grid { grid-template-columns: repeat(4,1fr); gap: 6px; }
+  .pbt { font-size: 9px; border-radius: 10px; }
+
+  .hal { padding: 10px; padding-bottom: 80px; }
+  .kartu { padding: 12px; border-radius: 16px; margin-bottom: 10px; }
+  .kartu-judul { font-size: 12px; }
+
+  .huruf-besar { font-size: 72px !important; }
+
+  .suku { font-size: 22px !important; padding: 7px 12px !important; min-width: 48px !important; }
+  .suku.tok-active { transform: scale(1.25) !important; }
+
+  .bkata { font-size: 18px !important; padding: 0 2px !important; }
+  .baris { padding: 9px 10px !important; gap: 5px !important; }
+
+  .kgambar img { width: 60px !important; height: 60px !important; }
+  .kgambar .kword { font-size: 15px !important; }
+  .kata-grid { grid-template-columns: repeat(auto-fit, minmax(90px,1fr)) !important; gap: 8px !important; }
+
+  .kalimat-box p { font-size: 18px !important; }
+
+  .pr-line { font-size: 14px !important; }
+
+  .bnav { padding: 8px 12px; }
+  .nbtn, .nb { padding: 9px 16px !important; font-size: 13px !important; border-radius: 22px !important; }
+
+  /* Welcome screen mobile */
+  .wl-card { padding: 16px; }
+  .wl-input { font-size: 18px; padding: 10px 14px; }
+  .wl-mode-btn { padding: 11px 14px; }
+  .wm-icon { width: 40px; height: 40px; font-size: 20px; }
+  .wm-title { font-size: 14px; }
+  .wm-desc { font-size: 11px; }
+
+  /* Token overlay mobile */
+  .tok { }
+  .tok.active { font-size: 32px !important; min-width: 68px !important; min-height: 68px !important; }
+  .tok.idle { font-size: 17px !important; min-width: 44px !important; min-height: 44px !important; }
+  .tok.done { font-size: 14px !important; min-width: 38px !important; min-height: 38px !important; }
+
+  /* Mic bar mobile */
+  #int-mic-bar { bottom: 72px; padding: 7px 14px; font-size: 12px; max-width: 90vw; }
+
+  /* Reward mobile */
+  #int-reward .tok-rbox { padding: 20px 28px; }
+  .int-remoji { font-size: 48px !important; }
+  .int-rtext { font-size: 20px !important; }
+
+  /* Mode indicator */
+  .mode-ind { top: 60px; right: 8px; font-size: 10px; padding: 3px 9px; }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .huruf-besar { font-size: 80px !important; }
+  .suku { font-size: 24px !important; }
+  .bkata { font-size: 19px !important; }
+  .kgambar img { width: 66px !important; height: 66px !important; }
+  .prt-grid { grid-template-columns: repeat(5,1fr); }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  #beranda { max-width: 640px; margin: 0 auto; }
+  .hal { max-width: 600px; }
+  #int-mic-bar { font-size: 14px; }
+}
+
+/* Touch devices - larger tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .suku { min-height: 52px !important; min-width: 52px !important; }
+  .baris { min-height: 50px !important; }
+  .kgambar { min-height: 100px !important; }
+  .nb, .nbtn { min-height: 46px !important; }
+  #int-guru-btn { min-height: 40px !important; padding: 8px 18px !important; }
+}
 </style>
 </head>
 <body>
@@ -4003,6 +4101,23 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 </div>
 <script>
 
+// ══ MIC EARLY REQUEST — minta izin mic saat halaman pertama dibuka ══
+// Ini agar popup muncul SEKALI saja saat load, bukan saat mulai belajar
+window.addEventListener('load', function(){
+  // Cek apakah sudah punya izin
+  if(navigator.permissions){
+    navigator.permissions.query({name:'microphone'}).then(function(result){
+      if(result.state==='granted'){
+        console.log('✅ Mic already granted');
+      } else {
+        // Belum ada izin - akan diminta saat mulai interaktif
+        console.log('Mic permission:', result.state);
+      }
+    });
+  }
+});
+
+
 // ══ AUDIO UNLOCK — Chrome butuh interaksi dulu ══
 let audioUnlocked = false;
 function unlockAudio(){
@@ -4497,17 +4612,23 @@ function intMatch(heard,target){
   if(!heard||!target)return false;
   if(heard===target)return true;
 
-  // Vokal tunggal (a, i, u, e, o) - sangat toleran
+  // Vokal tunggal (a,i,u,e,o)
   if(target.length===1){
-    return heard===target||heard.startsWith(target)||heard.includes(target);
+    // Cukup huruf target ada di hasil dengar
+    return heard.includes(target);
   }
-  // Suku kata 2-3 huruf (ba, ca, bi, cu, dll)
-  if(target.length<=3){
+  // Suku kata 2 huruf (ba,ca,bi,dll)
+  if(target.length===2){
     if(heard.includes(target))return true;
-    if(target.includes(heard)&&heard.length>=1)return true;
+    if(heard.length>=1&&target.startsWith(heard))return true;
+    return intLev(heard,target)>0.5;
+  }
+  // Suku kata 3 huruf
+  if(target.length===3){
+    if(heard.includes(target))return true;
     return intLev(heard,target)>0.55;
   }
-  // Kata 4+ huruf
+  // Kata panjang
   if(heard.includes(target))return true;
   return intLev(heard,target)>0.65;
 }
