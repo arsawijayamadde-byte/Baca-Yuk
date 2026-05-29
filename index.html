@@ -464,9 +464,25 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 }
 </style>
 <script>
-window.show;
-window.hide;
-window.set;
+window.showSens=function(){
+  document.getElementById('sens-wrap').style.display='block';
+  // scroll ke bawah sedikit
+  setTimeout(()=>{
+    document.getElementById('sens-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+window.hideSens=function(){
+  document.getElementById('sens-wrap').style.display='none';
+}
+window.setSens=function(level){
+  intSens = level;
+  // Update visual
+  document.querySelectorAll('.sens-btn').forEach(b=>{
+    b.classList.toggle('sens-active', b.dataset.sens===level);
+  });
+  // Auto mulai setelah pilih sensitifitas
+  wlMulai('interaktif');
+}
 </script>
 </head>
 <body>
