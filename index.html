@@ -4479,40 +4479,61 @@ function intStartListen(){
 
   function evalHeard(fin,itm){
     if(intEval)return;
-    if(Date.now()-lastMatchTime<600)return;
+    if(Date.now()-lastMatchTime<400)return;
     const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
     if(!target)return;
 
-    // Semua kandidat: interim per kata, final per kata, gabungan
-    const candidates=new Set();
-    [fin,itm].forEach(txt=>{
-      if(!txt)return;
-      txt.split(/\s+/).forEach(t=>{if(t)candidates.add(t);});
-      candidates.add(txt.replace(/\s+/g,''));
-      candidates.add(txt);
-    });
+    const txt=itm||fin;
+    if(!txt)return;
 
-    for(const c of candidates){
-      if(intMatch(c,target)){
+    // Pecah per kata dan cek satu per satu
+    const words=txt.trim().split(/\s+/).filter(w=>w.length>0);
+    for(const w of words){
+      if(intMatch(w,target)){
         lastMatchTime=Date.now();
-        intProsesTokens([c]);
+        intEval=true; // lock segera sebelum async
+        intProsesTokens([w]);
         return;
       }
+    }
+    // Cek keseluruhan teks juga
+    const full=txt.replace(/\s+/g,'');
+    if(intMatch(full,target)){
+      lastMatchTime=Date.now();
+      intEval=true;
+      intProsesTokens([full]);
     }
   }
 
   intSR.onresult=(e)=>{
-    let fin='',itm='';
+    let fins=[],itm='';
     for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal)fin+=e.results[i][0].transcript.toLowerCase().trim()+' ';
-      else itm+=e.results[i][0].transcript.toLowerCase().trim()+' ';
+      if(e.results[i].isFinal){
+        // Ambil SEMUA alternatives (bukan hanya [0])
+        for(let a=0;a<e.results[i].length;a++){
+          fins.push(e.results[i][a].transcript.toLowerCase().trim());
+        }
+      } else {
+        itm+=e.results[i][0].transcript.toLowerCase().trim()+' ';
+      }
     }
-    fin=fin.trim();itm=itm.trim();
-    setHeardTxt('"'+(fin||itm)+'"');
-    // Cek interim dulu (lebih cepat)
-    if(itm)evalHeard('',itm);
-    // Lalu cek final
-    if(fin)evalHeard(fin,'');
+    itm=itm.trim();
+    const fin=fins[0]||'';
+
+    // Tampilkan
+    setHeardTxt('"'+(itm||fin)+'"');
+
+    if(intEval)return;
+
+    // Cek interim dulu (HP lebih cepat dari sini)
+    if(itm) evalHeard('',itm);
+
+    // Cek semua alternatives dari final (PC lebih reliable dari sini)
+    if(!intEval && fins.length>0){
+      for(const f of fins){
+        if(!intEval) evalHeard(f,'');
+      }
+    }
   };
 
   intSR.onerror=(e)=>{
