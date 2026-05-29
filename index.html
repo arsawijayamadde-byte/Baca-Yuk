@@ -4465,7 +4465,7 @@ function intInitSR(){
   if(!SRC)return;
   intSR=new SRC();
   intSR.lang='id-ID';
-  intSR.continuous=true;
+  intSR.continuous=false;
   intSR.interimResults=true;
   intSR.maxAlternatives=8;
 }
@@ -4529,9 +4529,9 @@ function intStartListen(){
   };
 
   intSR.onend=()=>{
-    // continuous:true - restart hanya kalau berhenti tidak sengaja
-    if(intRunning&&intCurIdx<intCurEls.length){
-      setTimeout(()=>{try{intSR.start();}catch(e){}},500);
+    // Restart segera setelah result - jangan tunggu lama
+    if(intRunning&&intCurIdx<intCurEls.length&&!intEval){
+      setTimeout(()=>{try{intSR.start();}catch(e){}},100);
     }
   };
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
@@ -4564,7 +4564,7 @@ async function intProsesTokens(heardArr){
     await intDoBenar();
     intEval=false;
     if(intCurIdx<intCurEls.length){
-      await intWait(200);
+      await intWait(150);
       intInitSR();intStartListen();
     }
   }else{
