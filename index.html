@@ -4759,7 +4759,7 @@ window.goHome=function(){
 // ══ SENSITIFITAS ══════════════════════════════════════════════
 var intSens = 'normal'; // default
 
-function showSens(){
+window.showSens=function(){
   document.getElementById('sens-wrap').style.display='block';
   // scroll ke bawah sedikit
   setTimeout(()=>{
@@ -4767,11 +4767,11 @@ function showSens(){
   },100);
 }
 
-function hideSens(){
+window.hideSens=function(){
   document.getElementById('sens-wrap').style.display='none';
 }
 
-function setSens(level){
+window.setSens=function(level){
   intSens = level;
   // Update visual
   document.querySelectorAll('.sens-btn').forEach(b=>{
