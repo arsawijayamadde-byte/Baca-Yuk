@@ -4668,7 +4668,7 @@ function intStartListen(){
       setStatusTxt('⚠️ izinkan mikrofon');
       return;
     }
-    restartSR();
+    try{intSR.start();}catch(e){}
   };
 
   intSR.onend=()=>{
