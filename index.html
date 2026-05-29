@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>baca yuk! — fase 1</title>
+<title>baca yuk! — level 1</title>
 <style>
 :root{
   --primary:#E74C3C;
@@ -344,11 +344,11 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 
     <div style="font-size:13px;font-weight:900;color:#333;margin:14px 0 6px">📚 pilih materi:</div>
     <select id="wl-fase" class="wl-select" onchange="updateFaseInfo()">
-      <option value="1">fase 1</option>
-      <option value="2">fase 2</option>
-      <option value="3">fase 3 — konsonan akhir & diftong (20 prt)</option>
-      <option value="4">fase 4 — kluster & cerita (20 prt)</option>
-      <option value="5">fase 5</option>
+      <option value="1">level 1</option>
+      <option value="2">level 2</option>
+      <option value="3">level 3</option>
+      <option value="4">level 4</option>
+      <option value="5">level 5</option>
     </select>
     <div id="fase-info" style="font-size:11px;color:#aaa;margin-top:6px;padding:6px 10px;background:#FFF9F0;border-radius:10px;line-height:1.6"></div>
 
@@ -419,14 +419,14 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 
 <div class="top-nav">
   <div class="logo">📖</div>
-  <div><div class="appname">baca yuk! — fase 1</div><div class="appsub">suku kata terbuka · 29 pertemuan</div></div>
+  <div><div class="appname">baca yuk! — level 1</div><div class="appsub">suku kata terbuka · 29 pertemuan</div></div>
   <span id="nav-nama" style="font-size:13px;font-weight:900;color:#FF8E53;margin-left:4px"></span>
   <button class="star-badge" onclick="goHome()">⭐ 0</button>
 </div>
 <div id="beranda" style="padding:16px;display:none">
   <div class="hero">
     <div class="hero-emoji">📖</div>
-    <h1>baca yuk! — fase 1</h1>
+    <h1>baca yuk! — level 1</h1>
     <p>suku kata terbuka · 29 pertemuan</p>
   </div><div class="unit-card">
     <div class="unit-title" style="color:#E74C3C">
@@ -4946,7 +4946,7 @@ window.wlMulai = function(mode){
   localStorage.setItem('lastFase', fase);
   localStorage.setItem('lastNama', nama);
 
-  // Kalau bukan fase 1, redirect ke file fase yang sesuai
+  // Kalau bukan level 1, redirect ke file fase yang sesuai
   if(fase !== '1' && FASE_URLS[fase]){
     // Simpan nama dan mode ke sessionStorage dulu
     sessionStorage.setItem('pendingNama', nama);
