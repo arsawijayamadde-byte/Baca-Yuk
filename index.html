@@ -5351,14 +5351,14 @@ function initMaskotDrag(){
 // Saat mic aktif → tunggu
 var __origIntStartListen = intStartListen;
 window.intStartListen = function(){
-  setMaskot('tunggu', 'hmm... aku tunggu jawabanmu ya!');
+  setMaskot('benar', 'hmm... aku tunggu jawabanmu ya!');
   __origIntStartListen.apply(this, arguments);
 };
 
 // Saat benar → senang
 var __origIntDoBenarMaskot = window.intDoBenar || intDoBenar;
 window.intDoBenar = async function(){
-  setMaskot('benar', 'hebat! jawabanmu benar! 🌟');
+  setMaskot('tunggu', 'hebat! jawabanmu benar! 🌟');
   await __origIntDoBenarMaskot.apply(this, arguments);
   // Kembali ke tunggu setelah reward
   setTimeout(function(){ setMaskot('tunggu',''); }, 2000);
