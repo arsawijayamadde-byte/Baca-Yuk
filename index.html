@@ -4746,6 +4746,10 @@ async function intDoBenar(){
   intCurIdx++;
   if(intCurIdx<intCurEls.length){
     intActivateItem(intCurIdx);
+    // Restart SR untuk item berikutnya
+    await intWait(200);
+    intInitSR();
+    intStartListen();
   } else {
     intDoneHal();
   }
