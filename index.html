@@ -4783,6 +4783,7 @@ function intMatch(heard,target){
     if(heard===target)return true;
     // Heard boleh 1 huruf lebih panjang HANYA kalau huruf tambahan adalah pengulangan vokal
     // ba → baa ✅ | ba → bab ✅ | ca → cab ❌
+    if(heard.startsWith(target))return true;
     if(heard.length===3&&heard.startsWith(target)){
       const extra=heard[2];
       const vowels='aiueo';
