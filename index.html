@@ -4718,23 +4718,6 @@ function intStartListen(){
     const display=itm||fin;
     if(display) setHeardTxt('"'+display+'"');
 
-    // Counter salah — jalankan SEBELUM intEval check
-    // Hanya dari final result yang bermakna (bukan noise)
-    if(!intEval && fins.length>0){
-      var _allMiss = fins.every(function(f){
-        return f.length>0 && !intMatch(f, intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'');
-      });
-      if(_allMiss){
-        window._salahCount=(window._salahCount||0)+1;
-        if(window._salahCount>=5){
-          window._salahCount=0;
-          setMaskot('salah','yahh... belum tepat!');
-          try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
-          setTimeout(function(){setMaskot('tunggu','');},2500);
-        }
-      }
-    }
-
     // Hanya proses kalau tidak sedang evaluasi
     if(intEval) return;
 
@@ -5291,24 +5274,31 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 function setMaskot(state, text){
-  if(!maskotImg) return;
-  maskotState = state;
+  var img = document.getElementById('maskot-img');
+  var wrap = document.getElementById('maskot-wrap');
+  if(!img || !wrap) return;
 
-  // Ganti gambar
-  maskotImg.src = MASKOT_IMGS[state] || MASKOT_IMGS.tunggu;
+  img.src = MASKOT_IMGS[state] || MASKOT_IMGS.tunggu;
 
   // Animasi
-  maskotEl.classList.remove('bounce','shake');
-  void maskotEl.offsetWidth; // reflow
-  if(state === 'benar') maskotEl.classList.add('bounce');
-  if(state === 'salah') maskotEl.classList.add('shake');
+  img.classList.remove('maskot-bounce','maskot-shake');
+  void img.offsetWidth;
+  if(state==='benar') img.classList.add('maskot-bounce');
+  if(state==='salah') img.classList.add('maskot-shake');
 
-  // Speech bubble
-  if(text){
-    showMaskotBubble(text);
-  } else {
-    hideMaskotBubble();
+  // Bubble
+  var bub = document.getElementById('maskot-bubble');
+  if(bub){
+    if(text){ bub.textContent=text; bub.classList.add('show'); }
+    else { bub.classList.remove('show'); }
   }
+
+  // Auto hide bubble
+  if(window._maskotTimer) clearTimeout(window._maskotTimer);
+  if(text) window._maskotTimer = setTimeout(function(){
+    var b=document.getElementById('maskot-bubble');
+    if(b) b.classList.remove('show');
+  }, 2500);
 }
 
 function showMaskotBubble(text){
