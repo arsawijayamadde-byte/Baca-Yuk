@@ -298,6 +298,20 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
   .nb, .nbtn { min-height: 46px !important; }
   #int-guru-btn { min-height: 40px !important; padding: 8px 18px !important; }
 }
+
+/* SENSITIFITAS BUTTONS */
+.sens-btn{
+  padding:10px 8px;border-radius:14px;
+  border:2px solid #FFE4CC;background:#fff;
+  cursor:pointer;font-family:inherit;
+  text-align:center;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.sens-btn:active{transform:scale(.95)}
+.sens-btn.sens-active{border-color:#FF6B6B;background:#FFF0F0;}
+.sens-icon{font-size:18px;line-height:1}
+.sens-title{font-size:13px;font-weight:900;color:#333}
+.sens-desc{font-size:10px;color:#aaa;line-height:1.3}
 </style>
 </head>
 <body>
@@ -312,16 +326,45 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
     <input id="wl-nama" class="wl-input" type="text" placeholder="nama anak..." maxlength="20"
       onkeydown="if(event.key==='Enter') document.querySelector('.wl-mode-btn').focus()">
     <div style="font-size:13px;font-weight:900;color:#333;margin:14px 0 0">pilih mode belajar:</div>
-    <button class="wl-mode-btn wm-biasa" onclick="wlMulai('normal')">
+    <button class="wl-mode-btn wm-biasa" id="btn-biasa" onclick="hideSens();wlMulai('normal')">
       <div class="wm-icon">📖</div>
       <div><div class="wm-title">mode biasa</div><div class="wm-desc">tap sendiri, baca mandiri</div></div>
       <div class="wm-badge">tap &amp; baca</div>
     </button>
-    <button class="wl-mode-btn wm-interaktif" onclick="wlMulai('interaktif')">
+    <button class="wl-mode-btn wm-interaktif" id="btn-interaktif" onclick="showSens()">
       <div class="wm-icon">🎤</div>
-      <div><div class="wm-title">mode interaktif</div><div class="wm-desc">elemen aktif satu per satu + suara</div></div>
+      <div><div class="wm-title">mode interaktif</div><div class="wm-desc">sistem dengar &amp; nilai</div></div>
       <div class="wm-badge">🔴 live</div>
     </button>
+
+    <!-- SENSITIFITAS — muncul saat mode interaktif -->
+    <div id="sens-wrap" style="width:100%;display:none;margin-top:4px">
+      <div style="font-size:12px;font-weight:900;color:#aaa;margin-bottom:8px;text-align:center">
+        🎚️ sensitifitas pengenalan suara:
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="sens-btn" data-sens="mudah" onclick="setSens('mudah')">
+          <div class="sens-icon">🟢</div>
+          <div class="sens-title">mudah</div>
+          <div class="sens-desc">toleran, cocok pemula</div>
+        </button>
+        <button class="sens-btn sens-active" data-sens="normal" onclick="setSens('normal')">
+          <div class="sens-icon">🟡</div>
+          <div class="sens-title">normal</div>
+          <div class="sens-desc">standar</div>
+        </button>
+        <button class="sens-btn" data-sens="ketat" onclick="setSens('ketat')">
+          <div class="sens-icon">🔴</div>
+          <div class="sens-title">ketat</div>
+          <div class="sens-desc">harus persis</div>
+        </button>
+        <button class="sens-btn" data-sens="tanpa-r" onclick="setSens('tanpa-r')">
+          <div class="sens-icon">🔵</div>
+          <div class="sens-title">tanpa R</div>
+          <div class="sens-desc">r→l/w diterima</div>
+        </button>
+      </div>
+    </div>
   </div>
   <div style="font-size:11px;color:#ccc;text-align:center;max-width:300px;line-height:1.8">
     mode interaktif: Chrome + izinkan mikrofon<br>
@@ -4622,27 +4665,63 @@ function intMatch(heard,target){
   heard=heard.replace(/[.,!?-]/g,'').trim().toLowerCase();
   target=target.replace(/[.,!?-]/g,'').trim().toLowerCase();
   if(!heard||!target)return false;
+
+  // Exact match selalu benar
   if(heard===target)return true;
 
-  // Vokal tunggal (a,i,u,e,o)
+  // Vokal tunggal (a,i,u,e,o) - 1 huruf
   if(target.length===1){
-    // Cukup huruf target ada di hasil dengar
-    return heard.includes(target);
+    // heard harus sama persis ATAU heard adalah suku kata yang DIAWALI vokal target
+    // contoh: target "a", heard "a" ✅ | heard "ah" ✅ | heard "aku" ❌
+    if(heard===target)return true;
+    if(heard.length<=2&&heard.startsWith(target))return true;
+    return false;
   }
+
   // Suku kata 2 huruf (ba,ca,bi,dll)
   if(target.length===2){
-    if(heard.includes(target))return true;
-    if(heard.length>=1&&target.startsWith(heard))return true;
-    return intLev(heard,target)>0.5;
+    if(heard===target)return true;
+    // Heard boleh 1 huruf lebih panjang HANYA kalau huruf tambahan adalah pengulangan vokal
+    // ba → baa ✅ | ba → bab ✅ | ca → cab ❌
+    if(heard.length===3&&heard.startsWith(target)){
+      const extra=heard[2];
+      const vowels='aiueo';
+      // Huruf extra harus sama dengan huruf terakhir target (perpanjangan)
+      if(extra===target[1])return true; // baa, caa
+      return false;
+    }
+    return false;
   }
-  // Suku kata 3 huruf
+
+  // Suku kata 3 huruf (bal,ban,dll)
   if(target.length===3){
-    if(heard.includes(target))return true;
-    return intLev(heard,target)>0.55;
+    if(heard===target)return true;
+    if(heard.startsWith(target))return true;
+    // 1 huruf beda tapi harus diawali huruf pertama yang sama
+    if(heard[0]===target[0]){
+      return intLevenshtein(heard,target)<=1;
+    }
+    return false;
   }
-  // Kata panjang
+
+  // Kata panjang 4+ huruf
+  if(heard===target)return true;
   if(heard.includes(target))return true;
-  return intLev(heard,target)>0.65;
+  return intLev(heard,target)>0.75;
+}
+
+// Levenshtein distance (bukan similarity)
+function intLevenshtein(a,b){
+  if(a===b)return 0;
+  if(!a.length)return b.length;
+  if(!b.length)return a.length;
+  const m=[];
+  for(let i=0;i<=b.length;i++)m[i]=[i];
+  for(let j=0;j<=a.length;j++)m[0][j]=j;
+  for(let i=1;i<=b.length;i++)
+    for(let j=1;j<=a.length;j++)
+      m[i][j]=b[i-1]===a[j-1]?m[i-1][j-1]:Math.min(m[i-1][j-1]+1,m[i][j-1]+1,m[i-1][j]+1);
+  return m[b.length][a.length];
 }
 function intLev(a,b){
   if(a===b)return 1;if(!a.length||!b.length)return 0;
@@ -4675,6 +4754,120 @@ window.goHome=function(){
   intStopListen();intCurEls=[];intCurIdx=0;intEval=false;
   _origGoHome();
 };
+
+
+// ══ SENSITIFITAS ══════════════════════════════════════════════
+var intSens = 'normal'; // default
+
+function showSens(){
+  document.getElementById('sens-wrap').style.display='block';
+  // scroll ke bawah sedikit
+  setTimeout(()=>{
+    document.getElementById('sens-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+function hideSens(){
+  document.getElementById('sens-wrap').style.display='none';
+}
+
+function setSens(level){
+  intSens = level;
+  // Update visual
+  document.querySelectorAll('.sens-btn').forEach(b=>{
+    b.classList.toggle('sens-active', b.dataset.sens===level);
+  });
+  // Auto mulai setelah pilih sensitifitas
+  wlMulai('interaktif');
+}
+
+// Override intMatch berdasarkan sensitifitas
+function intMatch(heard, target){
+  if(!heard||!target) return false;
+  heard  = heard.replace(/[.,!?-]/g,'').trim().toLowerCase();
+  target = target.replace(/[.,!?-]/g,'').trim().toLowerCase();
+  if(!heard||!target) return false;
+
+  // Mode Tanpa-R: ganti r → l di heard sebelum compare
+  if(intSens==='tanpa-r'){
+    heard = heard.replace(/r/g,'l');
+    target = target.replace(/r/g,'l');
+    // juga terima w sebagai r
+    const heardAlt = heard.replace(/l/g,'r');
+    if(intMatchCore(heard,target,'normal')) return true;
+    if(intMatchCore(heardAlt,target,'normal')) return true;
+    return false;
+  }
+
+  return intMatchCore(heard, target, intSens);
+}
+
+function intMatchCore(heard, target, level){
+  if(heard===target) return true;
+
+  if(level==='mudah'){
+    // Sangat toleran - cukup huruf pertama sama dan panjang mirip
+    if(target.length===1){
+      return heard.includes(target)||heard[0]===target[0];
+    }
+    if(target.length===2){
+      if(heard.startsWith(target)) return true;
+      if(heard[0]===target[0]) return true; // cukup huruf pertama sama
+      return intLev(heard,target)>0.5;
+    }
+    if(target.length<=4){
+      if(heard.includes(target)) return true;
+      return intLev(heard,target)>0.55;
+    }
+    return intLev(heard,target)>0.6;
+
+  } else if(level==='normal'){
+    if(target.length===1){
+      if(heard===target) return true;
+      if(heard.length<=2&&heard.startsWith(target)) return true;
+      return false;
+    }
+    if(target.length===2){
+      if(heard===target) return true;
+      if(heard.length===3&&heard.startsWith(target)&&heard[2]===target[1]) return true;
+      return false;
+    }
+    if(target.length===3){
+      if(heard===target) return true;
+      if(heard.startsWith(target)) return true;
+      if(heard[0]===target[0]) return intLevenshtein(heard,target)<=1;
+      return false;
+    }
+    if(heard.includes(target)) return true;
+    return intLev(heard,target)>0.75;
+
+  } else if(level==='ketat'){
+    // Harus sangat persis
+    if(heard===target) return true;
+    if(target.length<=2) return heard===target;
+    if(target.length===3){
+      return heard===target||
+             (heard.startsWith(target)&&heard.length===target.length+1);
+    }
+    return heard===target||intLev(heard,target)>0.85;
+  }
+
+  return heard===target;
+}
+
+function intLevenshtein(a,b){
+  if(a===b) return 0;
+  if(!a.length) return b.length;
+  if(!b.length) return a.length;
+  const m=[];
+  for(let i=0;i<=b.length;i++) m[i]=[i];
+  for(let j=0;j<=a.length;j++) m[0][j]=j;
+  for(let i=1;i<=b.length;i++)
+    for(let j=1;j<=a.length;j++)
+      m[i][j]=b[i-1]===a[j-1]?m[i-1][j-1]:
+        Math.min(m[i-1][j-1]+1,m[i][j-1]+1,m[i-1][j]+1);
+  return m[b.length][a.length];
+}
 
 </script>
 </body>
