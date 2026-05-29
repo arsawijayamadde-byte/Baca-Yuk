@@ -4804,6 +4804,12 @@ async function intProsesTokens(heardArr){
     }
   }
   if(ok){
+    setMaskot('benar','hebat! jawabanmu benar!');
+  } else {
+    setMaskot('salah','yahh... belum tepat. coba lagi ya!');
+    setTimeout(function(){ setMaskot('tunggu',''); }, 2500);
+  }
+  if(ok){
     intStopListen();setStatusTxt('');
     await intDoBenar();
     intEval=false;
