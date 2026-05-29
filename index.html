@@ -4475,47 +4475,12 @@ function intStartListen(){
   intRunning=true;
   showMicBar();
 
-  var lastMatchTime=0;
-
-  function evalHeard(fin,itm){
-    if(intEval)return;
-    if(Date.now()-lastMatchTime<400)return;
-    const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
-    if(!target)return;
-
-    const txt=itm||fin;
-    if(!txt)return;
-
-    // DEBUG LOG
-    console.log('👂 heard:', JSON.stringify(txt), '| target:', JSON.stringify(target), '| intEval:', intEval, '| intCurIdx:', intCurIdx, '| queue len:', intCurEls.length);
-
-    // Pecah per kata dan cek satu per satu
-    const words=txt.trim().split(/\s+/).filter(w=>w.length>0);
-    for(const w of words){
-      const matched=intMatch(w,target);
-      console.log('  check word:', JSON.stringify(w), '→', matched);
-      if(matched){
-        lastMatchTime=Date.now();
-        // intProsesTokens yang akan set intEval=true
-        intProsesTokens([w]);
-        return;
-      }
-    }
-    // Cek keseluruhan teks juga
-    const full=txt.replace(/\s+/g,'');
-    const matchedFull=intMatch(full,target);
-    console.log('  check full:', JSON.stringify(full), '→', matchedFull);
-    if(matchedFull){
-      lastMatchTime=Date.now();
-      intProsesTokens([full]);
-    }
-  }
 
   intSR.onresult=(e)=>{
+    // Kumpulkan semua hasil
     let fins=[],itm='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal){
-        // Ambil SEMUA alternatives (bukan hanya [0])
         for(let a=0;a<e.results[i].length;a++){
           fins.push(e.results[i][a].transcript.toLowerCase().trim());
         }
@@ -4525,19 +4490,31 @@ function intStartListen(){
     }
     itm=itm.trim();
     const fin=fins[0]||'';
+    const display=itm||fin;
+    if(display) setHeardTxt('"'+display+'"');
 
-    // Tampilkan
-    setHeardTxt('"'+(itm||fin)+'"');
+    // Hanya proses kalau tidak sedang evaluasi
+    if(intEval) return;
 
-    if(intEval)return;
+    // Kumpulkan semua kandidat kata
+    const candidates=[];
+    [itm,fin,...fins].forEach(txt=>{
+      if(!txt) return;
+      txt.split(/\s+/).forEach(w=>{ if(w && !candidates.includes(w)) candidates.push(w); });
+    });
 
-    // Cek interim dulu (HP lebih cepat dari sini)
-    if(itm) evalHeard('',itm);
+    if(candidates.length===0) return;
 
-    // Cek semua alternatives dari final (PC lebih reliable dari sini)
-    if(!intEval && fins.length>0){
-      for(const f of fins){
-        if(!intEval) evalHeard(f,'');
+    const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
+    if(!target) return;
+
+    console.log('👂 candidates:',candidates,'| target:',target);
+
+    for(const c of candidates){
+      if(intMatch(c,target)){
+        console.log('✅ MATCH:',c,'→',target);
+        intProsesTokens([c]);
+        return;
       }
     }
   };
