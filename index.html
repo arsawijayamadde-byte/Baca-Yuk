@@ -4735,11 +4735,22 @@ function intStartListen(){
 
     console.log('👂 candidates:',candidates,'| target:',target);
 
+    let matched=false;
     for(const c of candidates){
       if(intMatch(c,target)){
         console.log('✅ MATCH:',c,'→',target);
+        matched=true;
         window.intProsesTokens([c]);
         return;
+      }
+    }
+    // Final result tapi tidak match → naik counter
+    if(!matched && fins.length>0){
+      window._salahCount=(window._salahCount||0)+1;
+      if(window._salahCount>=5){
+        window._salahCount=0;
+        setMaskot('salah','yahh... belum tepat!');
+        setTimeout(function(){setMaskot('tunggu','');},2500);
       }
     }
   };
