@@ -4672,9 +4672,10 @@ function intStartListen(){
   };
 
   intSR.onend=()=>{
-    // Restart segera setelah result - jangan tunggu lama
-    if(intRunning&&intCurIdx<intCurEls.length){
-      setTimeout(()=>{try{intSR.start();}catch(e){}},100);
+    if(intRunning){
+      try{intSR.start();}catch(e){}
+    }
+  }catch(e){}},100);
     }
   };
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
