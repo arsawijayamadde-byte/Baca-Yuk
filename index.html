@@ -4750,7 +4750,7 @@ function intStartListen(){
       if(window._salahCount>=5){
         window._salahCount=0;
         setMaskot('salah','yahh... belum tepat!');
-        intSpeak('yahh belum tepat, coba lagi ya!',1.0);
+        try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
         setTimeout(function(){setMaskot('tunggu','');},2500);
       }
     }
@@ -4807,7 +4807,7 @@ async function intProsesTokens(heardArr){
     if(_salahCount>=5){
       _salahCount=0;
       setMaskot('salah','yahh... belum tepat!');
-      intSpeak('yahh belum tepat, coba lagi ya!',1.0);
+      try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
       setTimeout(function(){setMaskot('tunggu','');},2500);
     }
   }
