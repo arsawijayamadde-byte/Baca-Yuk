@@ -4820,10 +4820,15 @@ async function intProsesTokens(heardArr){
     }
   }
   if(ok){
+    window._salahCount = 0;
     setMaskot('benar','hebat! jawabanmu benar!');
   } else {
-    setMaskot('salah','yahh... belum tepat. coba lagi ya!');
-    setTimeout(function(){ setMaskot('tunggu',''); }, 2500);
+    window._salahCount = (window._salahCount||0) + 1;
+    if(window._salahCount >= 5){
+      window._salahCount = 0;
+      setMaskot('salah','yahh... belum tepat. coba lagi ya!');
+      setTimeout(function(){ setMaskot('tunggu',''); }, 2500);
+    }
   }
   if(ok){
     intStopListen();setStatusTxt('');
