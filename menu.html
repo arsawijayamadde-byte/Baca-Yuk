@@ -9,82 +9,29 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Nunito',sans-serif;background:#FFF9F0;min-height:100vh}
 
+.wrap{max-width:600px;margin:0 auto;padding:0 0 40px}
+
 /* HEADER */
 .header{
   background:#fff;border-bottom:3px solid #FFE4CC;
-  padding:14px 20px;display:flex;align-items:center;gap:12px;
+  padding:12px 20px;display:flex;align-items:center;gap:12px;
   position:sticky;top:0;z-index:100;
 }
-.h-logo{width:44px;height:44px;border-radius:14px;
+.h-logo{width:40px;height:40px;border-radius:12px;
   background:linear-gradient(135deg,#FF6B6B,#FF8E53);
-  display:flex;align-items:center;justify-content:center;font-size:22px}
-.h-title{font-size:18px;font-weight:900;color:#FF6B6B}
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.h-title{font-size:17px;font-weight:900;color:#FF6B6B}
 .h-sub{font-size:11px;color:#aaa}
 
 /* HERO */
 .hero{
   background:linear-gradient(135deg,#FF6B6B,#FF8E53);
-  margin:16px;border-radius:24px;padding:24px 20px;
+  margin:16px;border-radius:24px;padding:28px 20px;
   text-align:center;color:white;
 }
-.hero-emoji{font-size:56px;margin-bottom:8px}
-.hero h1{font-size:28px;font-weight:900;margin-bottom:6px}
-.hero p{font-size:14px;opacity:.9;line-height:1.6}
-
-/* PROGRESS OVERVIEW */
-.progress-card{
-  background:#fff;margin:0 16px 16px;
-  border-radius:20px;border:2px solid #FFE4CC;
-  padding:16px;
-}
-.progress-title{font-size:14px;font-weight:900;color:#333;margin-bottom:12px;
-  display:flex;align-items:center;gap:8px}
-.prog-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.prog-label{font-size:12px;font-weight:700;color:#555;width:50px;flex-shrink:0}
-.prog-bar{flex:1;height:10px;background:#FFE4CC;border-radius:5px;overflow:hidden}
-.prog-fill{height:100%;border-radius:5px;
-  background:linear-gradient(90deg,#FF6B6B,#FF8E53);
-  transition:width .5s ease}
-.prog-pct{font-size:11px;color:#aaa;width:30px;text-align:right;flex-shrink:0}
-
-/* FASE CARDS */
-.fase-grid{
-  display:flex;flex-direction:column;gap:12px;
-  padding:0 16px 24px;
-}
-
-.fase-card{
-  background:#fff;border-radius:20px;
-  border:2.5px solid #FFE4CC;
-  padding:18px;cursor:pointer;
-  transition:all .2s;
-  display:flex;align-items:center;gap:14px;
-  text-decoration:none;
-  user-select:none;-webkit-tap-highlight-color:transparent;
-}
-.fase-card:active{transform:scale(.98)}
-.fase-card.locked{opacity:.5;cursor:default}
-.fase-card.completed{border-color:#6BCB77;background:#F0FFF4}
-.fase-card.current{border-color:#FF6B6B;background:#FFF5F5}
-
-.fase-icon{
-  width:56px;height:56px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;flex-shrink:0;
-}
-.fase-info{flex:1}
-.fase-num{font-size:11px;font-weight:700;color:#aaa;margin-bottom:2px}
-.fase-title{font-size:16px;font-weight:900;color:#333;margin-bottom:4px}
-.fase-desc{font-size:12px;color:#aaa;line-height:1.5}
-.fase-badge{
-  padding:4px 12px;border-radius:20px;
-  font-size:12px;font-weight:900;flex-shrink:0;
-}
-
-/* STATUS BADGE */
-.badge-selesai{background:#F0FFF4;color:#2D9B4B}
-.badge-lanjut{background:#FFF0F0;color:#FF4757}
-.badge-belum{background:#F5F5F5;color:#aaa}
+.hero-emoji{font-size:52px;line-height:1;margin-bottom:12px}
+.hero h1{font-size:26px;font-weight:900;margin-bottom:8px}
+.hero p{font-size:13px;opacity:.9;line-height:1.7}
 
 /* STATS */
 .stats{
@@ -93,27 +40,85 @@ body{font-family:'Nunito',sans-serif;background:#FFF9F0;min-height:100vh}
 }
 .stat-card{
   background:#fff;border-radius:16px;border:2px solid #FFE4CC;
-  padding:12px;text-align:center;
+  padding:14px 8px;text-align:center;
 }
-.stat-num{font-size:24px;font-weight:900;color:#FF6B6B}
-.stat-label{font-size:11px;color:#aaa;margin-top:2px}
+.stat-num{font-size:26px;font-weight:900;color:#FF6B6B;line-height:1}
+.stat-label{font-size:11px;color:#aaa;margin-top:4px;font-weight:700}
+
+/* FASE GRID */
+.fase-grid{
+  display:flex;flex-direction:column;gap:10px;
+  padding:0 16px 16px;
+}
+
+.fase-card{
+  background:#fff;border-radius:18px;
+  border:2.5px solid #EEE;
+  padding:16px;cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;gap:14px;
+  text-decoration:none;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.fase-card:active{transform:scale(.98)}
+.fase-card.current{border-color:#FF6B6B;background:#FFFAF9}
+.fase-card.locked{opacity:.5;pointer-events:none}
+.fase-card.done{border-color:#6BCB77;background:#F9FFF9}
+
+.fase-icon{
+  width:52px;height:52px;border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.f1-icon{background:#FFF0F0}
+.f2-icon{background:#EBF5FF}
+.f3-icon{background:#EAFAF1}
+.f4-icon{background:#FFF8E1}
+.f5-icon{background:#F3E5F5}
+
+.fase-info{flex:1;min-width:0}
+.fase-num{font-size:10px;font-weight:900;color:#aaa;letter-spacing:.5px;margin-bottom:3px}
+.fase-title{font-size:15px;font-weight:900;color:#333;margin-bottom:4px}
+.fase-desc{font-size:11px;color:#aaa;line-height:1.5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.fase-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.fase-badge{
+  padding:4px 12px;border-radius:20px;
+  font-size:12px;font-weight:900;white-space:nowrap;
+}
+.badge-mulai{background:#FFF0F0;color:#FF4757}
+.badge-done{background:#F0FFF4;color:#2D9B4B}
+.badge-belum{background:#F5F5F5;color:#bbb}
+.fase-prt{font-size:10px;color:#ccc;font-weight:700}
+
+/* SECTION TITLE */
+.sec-title{
+  font-size:13px;font-weight:900;color:#aaa;
+  padding:4px 16px 8px;letter-spacing:.5px;
+  text-transform:uppercase;
+}
 
 /* TIPS */
 .tips{
-  margin:0 16px 24px;background:#FFF9F0;
-  border-radius:16px;border:2px dashed #FFE4CC;
-  padding:14px;
+  margin:4px 16px 16px;background:#fff;
+  border-radius:18px;border:2px solid #FFE4CC;
+  padding:16px;
 }
-.tips-title{font-size:13px;font-weight:900;color:#FF8E53;margin-bottom:8px}
-.tips-item{font-size:12px;color:#666;padding:4px 0;
-  display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.tips-title{font-size:13px;font-weight:900;color:#FF8E53;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px}
+.tips-item{font-size:12px;color:#666;padding:5px 0;
+  display:flex;gap:10px;align-items:flex-start;line-height:1.5;
+  border-bottom:1px solid #FFF5EE}
+.tips-item:last-child{border:none}
 
+/* RESPONSIVE */
 @media(max-width:480px){
-  .hero{margin:12px;padding:20px 16px}
-  .hero h1{font-size:24px}
-  .fase-card{padding:14px}
-  .fase-icon{width:48px;height:48px;font-size:22px}
-  .fase-title{font-size:15px}
+  .hero{margin:12px;padding:22px 16px}
+  .hero h1{font-size:22px}
+  .fase-card{padding:13px}
+  .fase-icon{width:46px;height:46px;font-size:22px}
+  .fase-title{font-size:14px}
+  .fase-desc{font-size:10px}
 }
 </style>
 </head>
@@ -127,97 +132,112 @@ body{font-family:'Nunito',sans-serif;background:#FFF9F0;min-height:100vh}
   </div>
 </div>
 
-<div class="hero">
-  <div class="hero-emoji">📚</div>
-  <h1>pilih fase belajar</h1>
-  <p>139 pertemuan dari nol<br>sampai bisa baca apa saja!</p>
-</div>
+<div class="wrap">
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat-card">
-    <div class="stat-num">5</div>
-    <div class="stat-label">fase</div>
+  <div class="hero">
+    <div class="hero-emoji">📚</div>
+    <h1>pilih fase belajar</h1>
+    <p>139 pertemuan · dari nol sampai<br>bisa baca apa saja!</p>
   </div>
-  <div class="stat-card">
-    <div class="stat-num">139</div>
-    <div class="stat-label">pertemuan</div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">fase</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">139</div>
+      <div class="stat-label">pertemuan</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">🎤</div>
+      <div class="stat-label">interaktif</div>
+    </div>
   </div>
-  <div class="stat-card">
-    <div class="stat-num" style="color:#6BCB77">🎤</div>
-    <div class="stat-label">interaktif</div>
+
+  <div class="sec-title">📚 materi belajar</div>
+
+  <!-- FASE CARDS -->
+  <div class="fase-grid">
+
+    <a class="fase-card current" href="index.html">
+      <div class="fase-icon f1-icon">📖</div>
+      <div class="fase-info">
+        <div class="fase-num">FASE 1</div>
+        <div class="fase-title">suku kata terbuka</div>
+        <div class="fase-desc">ba ca ka la ma pa sa ta · ng ny kh sy</div>
+      </div>
+      <div class="fase-right">
+        <div class="fase-badge badge-mulai">mulai →</div>
+        <div class="fase-prt">29 pertemuan</div>
+      </div>
+    </a>
+
+    <a class="fase-card locked" href="fase2.html">
+      <div class="fase-icon f2-icon">📗</div>
+      <div class="fase-info">
+        <div class="fase-num">FASE 2</div>
+        <div class="fase-title">vokal i · u · e · o</div>
+        <div class="fase-desc">bi ci di · bu cu du · be ce de · bo co do</div>
+      </div>
+      <div class="fase-right">
+        <div class="fase-badge badge-belum">belum</div>
+        <div class="fase-prt">40 pertemuan</div>
+      </div>
+    </a>
+
+    <a class="fase-card locked" href="fase3.html">
+      <div class="fase-icon f3-icon">📘</div>
+      <div class="fase-info">
+        <div class="fase-num">FASE 3</div>
+        <div class="fase-title">konsonan akhir & diftong</div>
+        <div class="fase-desc">-b -d -k -l -m -n -r -s -t -ng · ai au</div>
+      </div>
+      <div class="fase-right">
+        <div class="fase-badge badge-belum">belum</div>
+        <div class="fase-prt">20 pertemuan</div>
+      </div>
+    </a>
+
+    <a class="fase-card locked" href="fase4.html">
+      <div class="fase-icon f4-icon">🎓</div>
+      <div class="fase-info">
+        <div class="fase-num">FASE 4</div>
+        <div class="fase-title">kluster & cerita</div>
+        <div class="fase-desc">bra cra dra fra · cerita pendek</div>
+      </div>
+      <div class="fase-right">
+        <div class="fase-badge badge-belum">belum</div>
+        <div class="fase-prt">20 pertemuan</div>
+      </div>
+    </a>
+
+    <a class="fase-card locked" href="fase5.html">
+      <div class="fase-icon f5-icon">🏆</div>
+      <div class="fase-info">
+        <div class="fase-num">FASE 5</div>
+        <div class="fase-title">membaca mandiri</div>
+        <div class="fase-desc">tanda baca · kosakata · cerita panjang</div>
+      </div>
+      <div class="fase-right">
+        <div class="fase-badge badge-belum">belum</div>
+        <div class="fase-prt">30 pertemuan</div>
+      </div>
+    </a>
+
   </div>
-</div>
 
-<!-- FASE CARDS -->
-<div class="fase-grid">
-
-  <!-- FASE 1 -->
-  <a class="fase-card current" href="fase1.html">
-    <div class="fase-icon" style="background:#FFF0F0">📖</div>
-    <div class="fase-info">
-      <div class="fase-num">FASE 1</div>
-      <div class="fase-title">suku kata terbuka</div>
-      <div class="fase-desc">ba ca ka la ma pa sa ta<br>ng ny kh sy · 29 pertemuan</div>
-    </div>
-    <div class="fase-badge badge-lanjut">mulai →</div>
-  </a>
-
-  <!-- FASE 2 -->
-  <a class="fase-card" href="fase2.html">
-    <div class="fase-icon" style="background:#EBF5FF">📗</div>
-    <div class="fase-info">
-      <div class="fase-num">FASE 2</div>
-      <div class="fase-title">vokal i · u · e · o</div>
-      <div class="fase-desc">bi ci di... bu cu du... be ce de... bo co do...<br>40 pertemuan</div>
-    </div>
-    <div class="fase-badge badge-belum">belum</div>
-  </a>
-
-  <!-- FASE 3 -->
-  <a class="fase-card" href="fase3.html">
-    <div class="fase-icon" style="background:#EAFAF1">📘</div>
-    <div class="fase-info">
-      <div class="fase-num">FASE 3</div>
-      <div class="fase-title">konsonan akhir & diftong</div>
-      <div class="fase-desc">-b -d -k -l -m -n -r -s -t -ng<br>diftong ai au · imbuhan · 20 pertemuan</div>
-    </div>
-    <div class="fase-badge badge-belum">belum</div>
-  </a>
-
-  <!-- FASE 4 -->
-  <a class="fase-card" href="fase4.html">
-    <div class="fase-icon" style="background:#FFF8E1">🎓</div>
-    <div class="fase-info">
-      <div class="fase-num">FASE 4</div>
-      <div class="fase-title">kluster & cerita</div>
-      <div class="fase-desc">bra cra dra fra gra kra pra sta tra<br>cerita pendek · 20 pertemuan</div>
-    </div>
-    <div class="fase-badge badge-belum">belum</div>
-  </a>
-
-  <!-- FASE 5 -->
-  <a class="fase-card" href="fase5.html">
-    <div class="fase-icon" style="background:#F3E5F5">🏆</div>
-    <div class="fase-info">
-      <div class="fase-num">FASE 5</div>
-      <div class="fase-title">membaca mandiri</div>
-      <div class="fase-desc">tanda baca · kosakata · cerita panjang<br>30 pertemuan</div>
-    </div>
-    <div class="fase-badge badge-belum">belum</div>
-  </a>
+  <!-- TIPS -->
+  <div class="sec-title">💡 cara pakai</div>
+  <div class="tips">
+    <div class="tips-item"><span>🎤</span><span>mode interaktif tersedia di <strong>Chrome</strong> — izinkan mikrofon sekali saja</span></div>
+    <div class="tips-item"><span>🎚️</span><span>pilih <strong>sensitifitas</strong> sesuai kemampuan anak (mudah/normal/ketat/tanpa R)</span></div>
+    <div class="tips-item"><span>✅</span><span>tombol <strong>guru</strong> tersedia sebagai override manual kapan saja</span></div>
+    <div class="tips-item"><span>📱</span><span>bisa dipakai di HP, tablet, dan laptop</span></div>
+    <div class="tips-item"><span>📋</span><span>selesaikan fase 1 dulu sebelum lanjut ke fase berikutnya</span></div>
+  </div>
 
 </div>
-
-<!-- TIPS -->
-<div class="tips">
-  <div class="tips-title">💡 tips penggunaan</div>
-  <div class="tips-item"><span>🎤</span><span>gunakan <strong>mode interaktif</strong> di Chrome untuk pengalaman terbaik</span></div>
-  <div class="tips-item"><span>📱</span><span>bisa dipakai di HP, tablet, dan laptop</span></div>
-  <div class="tips-item"><span>🎚️</span><span>pilih <strong>sensitifitas</strong> sesuai kemampuan anak</span></div>
-  <div class="tips-item"><span>✅</span><span>tombol <strong>guru</strong> tersedia sebagai override manual</span></div>
-  <div class="tips-item"><span>📋</span><span>selesaikan fase 1 dulu sebelum lanjut ke fase berikutnya</span></div>
-</div>
-
 </body>
 </html>
