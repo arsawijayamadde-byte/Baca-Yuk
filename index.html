@@ -4744,12 +4744,13 @@ function intStartListen(){
         return;
       }
     }
-    // Result tapi tidak match → naik counter
-    if(!matched && (fins.length>0 || itm.length>0)){
+    // Final result tapi tidak match → naik counter
+    if(!matched && fins.length>0){
       window._salahCount=(window._salahCount||0)+1;
       if(window._salahCount>=5){
         window._salahCount=0;
         setMaskot('salah','yahh... belum tepat!');
+        intSpeak('yahh belum tepat, coba lagi ya!',1.0);
         setTimeout(function(){setMaskot('tunggu','');},2500);
       }
     }
@@ -4806,6 +4807,7 @@ async function intProsesTokens(heardArr){
     if(_salahCount>=5){
       _salahCount=0;
       setMaskot('salah','yahh... belum tepat!');
+      intSpeak('yahh belum tepat, coba lagi ya!',1.0);
       setTimeout(function(){setMaskot('tunggu','');},2500);
     }
   }
