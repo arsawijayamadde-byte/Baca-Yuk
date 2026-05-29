@@ -4303,6 +4303,28 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
   <button id="btn-next" class="nbtn nprimary" onclick="nextHal()">lanjut →</button>
 </div>
 <script>
+window.showSens=function(){
+  document.getElementById('sens-wrap').style.display='block';
+  // scroll ke bawah sedikit
+  setTimeout(()=>{
+    document.getElementById('sens-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+window.hideSens=function(){
+  document.getElementById('sens-wrap').style.display='none';
+}
+
+window.setSens=function(level){
+  intSens = level;
+  // Update visual
+  document.querySelectorAll('.sens-btn').forEach(b=>{
+    b.classList.toggle('sens-active', b.dataset.sens===level);
+  });
+  // Auto mulai setelah pilih sensitifitas
+  wlMulai('interaktif');
+}
+
 
 // ══ MIC EARLY REQUEST — minta izin mic saat halaman pertama dibuka ══
 // Ini agar popup muncul SEKALI saja saat load, bukan saat mulai belajar
@@ -4933,27 +4955,9 @@ window.goHome=function(){
 // ══ SENSITIFITAS ══════════════════════════════════════════════
 var intSens = 'normal'; // default
 
-window.showSens=function(){
-  document.getElementById('sens-wrap').style.display='block';
-  // scroll ke bawah sedikit
-  setTimeout(()=>{
-    document.getElementById('sens-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
-  },100);
-}
 
-window.hideSens=function(){
-  document.getElementById('sens-wrap').style.display='none';
-}
 
-window.setSens=function(level){
-  intSens = level;
-  // Update visual
-  document.querySelectorAll('.sens-btn').forEach(b=>{
-    b.classList.toggle('sens-active', b.dataset.sens===level);
-  });
-  // Auto mulai setelah pilih sensitifitas
-  wlMulai('interaktif');
-}
+
 
 // Override intMatch berdasarkan sensitifitas
 function intMatch(heard, target){
