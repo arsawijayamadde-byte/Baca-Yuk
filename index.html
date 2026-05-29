@@ -4486,19 +4486,26 @@ function intStartListen(){
     const txt=itm||fin;
     if(!txt)return;
 
+    // DEBUG LOG
+    console.log('👂 heard:', JSON.stringify(txt), '| target:', JSON.stringify(target), '| intEval:', intEval, '| intCurIdx:', intCurIdx, '| queue len:', intCurEls.length);
+
     // Pecah per kata dan cek satu per satu
     const words=txt.trim().split(/\s+/).filter(w=>w.length>0);
     for(const w of words){
-      if(intMatch(w,target)){
+      const matched=intMatch(w,target);
+      console.log('  check word:', JSON.stringify(w), '→', matched);
+      if(matched){
         lastMatchTime=Date.now();
-        intEval=true; // lock segera sebelum async
+        intEval=true;
         intProsesTokens([w]);
         return;
       }
     }
     // Cek keseluruhan teks juga
     const full=txt.replace(/\s+/g,'');
-    if(intMatch(full,target)){
+    const matchedFull=intMatch(full,target);
+    console.log('  check full:', JSON.stringify(full), '→', matchedFull);
+    if(matchedFull){
       lastMatchTime=Date.now();
       intEval=true;
       intProsesTokens([full]);
