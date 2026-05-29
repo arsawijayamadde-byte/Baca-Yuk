@@ -4296,7 +4296,7 @@ function intSpeak(t,r){
 }
 
 // ── WELCOME ─────────────────────────────────────────────────────
-function wlMulai(mode){
+window.wlMulai=function(mode){
   const ni=document.getElementById('wl-nama');
   const nama=ni?ni.value.trim():'';
   if(!nama){if(ni){ni.focus();ni.style.borderColor='#FF4757';}return;}
