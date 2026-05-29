@@ -4503,7 +4503,11 @@ function intSpeak(t,r){
   return new Promise(res=>{
     synth.cancel();
     const u=new SpeechSynthesisUtterance(t);
-    u.lang='id-ID';u.rate=r||0.9;u.pitch=1.15;u.volume=1;
+    u.lang='id-ID';u.rate=r||0.9;u.pitch=1.1;
+    // Pilih suara Indonesia kalau ada
+    const vs=synth.getVoices();
+    const iv=vs.find(function(v){return v.lang&&v.lang.startsWith('id');});
+    if(iv) u.voice=iv;u.pitch=1.15;u.volume=1;
     u.onend=res;u.onerror=res;synth.speak(u);
   });
 }
@@ -4750,7 +4754,15 @@ function intStartListen(){
       if(window._salahCount>=5){
         window._salahCount=0;
         setMaskot('salah','yahh... belum tepat!');
-        try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
+        try{
+            window.speechSynthesis.cancel();
+            var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');
+            _u.lang='id-ID';_u.rate=0.9;_u.pitch=1.1;
+            var _vs=window.speechSynthesis.getVoices();
+            var _iv=_vs.find(function(v){return v.lang&&v.lang.startsWith('id');});
+            if(_iv)_u.voice=_iv;
+            window.speechSynthesis.speak(_u);
+          }catch(e){}
         setTimeout(function(){setMaskot('tunggu','');},2500);
       }
     }
@@ -5264,14 +5276,7 @@ var maskotBubbleTimer = null;
 var maskotState = 'tunggu';
 
 // Init setelah DOM ready
-document.addEventListener('DOMContentLoaded', function(){
-  maskotEl = document.getElementById('maskot');
-  maskotImg = document.getElementById('maskot-img');
-  maskotBubble = document.getElementById('maskot-bubble');
-  initMaskotDrag();
-  // Default tunggu
-  setMaskot('tunggu', '');
-});
+// maskot init removed (using getElementById directly)
 
 function setMaskot(state, text){
   var img = document.getElementById('maskot-img');
