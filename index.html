@@ -4750,7 +4750,7 @@ function intStartListen(){
     for(const c of candidates){
       if(intMatch(c,target)){
         console.log('✅ MATCH:',c,'→',target);
-        intProsesTokens([c]);
+        window.intProsesTokens([c]);
         return;
       }
     }
