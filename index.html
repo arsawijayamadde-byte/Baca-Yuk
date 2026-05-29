@@ -4718,6 +4718,23 @@ function intStartListen(){
     const display=itm||fin;
     if(display) setHeardTxt('"'+display+'"');
 
+    // Counter salah — jalankan SEBELUM intEval check
+    // Hanya dari final result yang bermakna (bukan noise)
+    if(!intEval && fins.length>0){
+      var _allMiss = fins.every(function(f){
+        return f.length>0 && !intMatch(f, intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'');
+      });
+      if(_allMiss){
+        window._salahCount=(window._salahCount||0)+1;
+        if(window._salahCount>=5){
+          window._salahCount=0;
+          setMaskot('salah','yahh... belum tepat!');
+          try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
+          setTimeout(function(){setMaskot('tunggu','');},2500);
+        }
+      }
+    }
+
     // Hanya proses kalau tidak sedang evaluasi
     if(intEval) return;
 
@@ -4798,18 +4815,10 @@ async function intProsesTokens(heardArr){
       break;
     }
   }
-  // maskot
+  // maskot benar
   if(ok){
-    _salahCount=0;
+    window._salahCount=0;
     setMaskot('benar','hebat! jawabanmu benar!');
-  } else {
-    _salahCount++;
-    if(_salahCount>=5){
-      _salahCount=0;
-      setMaskot('salah','yahh... belum tepat!');
-      try{var _u=new SpeechSynthesisUtterance('yahh belum tepat, coba lagi ya!');_u.lang='id-ID';_u.rate=1.0;window.speechSynthesis.speak(_u);}catch(e){}
-      setTimeout(function(){setMaskot('tunggu','');},2500);
-    }
   }
   if(ok){
     intStopListen();setStatusTxt('');
