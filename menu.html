@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Baca Yuk! — Menu Utama</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#FFF9F0;min-height:100vh}
+
+/* HEADER */
+.header{
+  background:#fff;border-bottom:3px solid #FFE4CC;
+  padding:14px 20px;display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+.h-logo{width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,#FF6B6B,#FF8E53);
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.h-title{font-size:18px;font-weight:900;color:#FF6B6B}
+.h-sub{font-size:11px;color:#aaa}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#FF6B6B,#FF8E53);
+  margin:16px;border-radius:24px;padding:24px 20px;
+  text-align:center;color:white;
+}
+.hero-emoji{font-size:56px;margin-bottom:8px}
+.hero h1{font-size:28px;font-weight:900;margin-bottom:6px}
+.hero p{font-size:14px;opacity:.9;line-height:1.6}
+
+/* PROGRESS OVERVIEW */
+.progress-card{
+  background:#fff;margin:0 16px 16px;
+  border-radius:20px;border:2px solid #FFE4CC;
+  padding:16px;
+}
+.progress-title{font-size:14px;font-weight:900;color:#333;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px}
+.prog-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.prog-label{font-size:12px;font-weight:700;color:#555;width:50px;flex-shrink:0}
+.prog-bar{flex:1;height:10px;background:#FFE4CC;border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;border-radius:5px;
+  background:linear-gradient(90deg,#FF6B6B,#FF8E53);
+  transition:width .5s ease}
+.prog-pct{font-size:11px;color:#aaa;width:30px;text-align:right;flex-shrink:0}
+
+/* FASE CARDS */
+.fase-grid{
+  display:flex;flex-direction:column;gap:12px;
+  padding:0 16px 24px;
+}
+
+.fase-card{
+  background:#fff;border-radius:20px;
+  border:2.5px solid #FFE4CC;
+  padding:18px;cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;gap:14px;
+  text-decoration:none;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.fase-card:active{transform:scale(.98)}
+.fase-card.locked{opacity:.5;cursor:default}
+.fase-card.completed{border-color:#6BCB77;background:#F0FFF4}
+.fase-card.current{border-color:#FF6B6B;background:#FFF5F5}
+
+.fase-icon{
+  width:56px;height:56px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.fase-info{flex:1}
+.fase-num{font-size:11px;font-weight:700;color:#aaa;margin-bottom:2px}
+.fase-title{font-size:16px;font-weight:900;color:#333;margin-bottom:4px}
+.fase-desc{font-size:12px;color:#aaa;line-height:1.5}
+.fase-badge{
+  padding:4px 12px;border-radius:20px;
+  font-size:12px;font-weight:900;flex-shrink:0;
+}
+
+/* STATUS BADGE */
+.badge-selesai{background:#F0FFF4;color:#2D9B4B}
+.badge-lanjut{background:#FFF0F0;color:#FF4757}
+.badge-belum{background:#F5F5F5;color:#aaa}
+
+/* STATS */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin:0 16px 16px;
+}
+.stat-card{
+  background:#fff;border-radius:16px;border:2px solid #FFE4CC;
+  padding:12px;text-align:center;
+}
+.stat-num{font-size:24px;font-weight:900;color:#FF6B6B}
+.stat-label{font-size:11px;color:#aaa;margin-top:2px}
+
+/* TIPS */
+.tips{
+  margin:0 16px 24px;background:#FFF9F0;
+  border-radius:16px;border:2px dashed #FFE4CC;
+  padding:14px;
+}
+.tips-title{font-size:13px;font-weight:900;color:#FF8E53;margin-bottom:8px}
+.tips-item{font-size:12px;color:#666;padding:4px 0;
+  display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+
+@media(max-width:480px){
+  .hero{margin:12px;padding:20px 16px}
+  .hero h1{font-size:24px}
+  .fase-card{padding:14px}
+  .fase-icon{width:48px;height:48px;font-size:22px}
+  .fase-title{font-size:15px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-logo">📖</div>
+  <div>
+    <div class="h-title">baca yuk!</div>
+    <div class="h-sub">program membaca anak usia 4–6 tahun</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-emoji">📚</div>
+  <h1>pilih fase belajar</h1>
+  <p>139 pertemuan dari nol<br>sampai bisa baca apa saja!</p>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-num">5</div>
+    <div class="stat-label">fase</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">139</div>
+    <div class="stat-label">pertemuan</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" style="color:#6BCB77">🎤</div>
+    <div class="stat-label">interaktif</div>
+  </div>
+</div>
+
+<!-- FASE CARDS -->
+<div class="fase-grid">
+
+  <!-- FASE 1 -->
+  <a class="fase-card current" href="fase1.html">
+    <div class="fase-icon" style="background:#FFF0F0">📖</div>
+    <div class="fase-info">
+      <div class="fase-num">FASE 1</div>
+      <div class="fase-title">suku kata terbuka</div>
+      <div class="fase-desc">ba ca ka la ma pa sa ta<br>ng ny kh sy · 29 pertemuan</div>
+    </div>
+    <div class="fase-badge badge-lanjut">mulai →</div>
+  </a>
+
+  <!-- FASE 2 -->
+  <a class="fase-card" href="fase2.html">
+    <div class="fase-icon" style="background:#EBF5FF">📗</div>
+    <div class="fase-info">
+      <div class="fase-num">FASE 2</div>
+      <div class="fase-title">vokal i · u · e · o</div>
+      <div class="fase-desc">bi ci di... bu cu du... be ce de... bo co do...<br>40 pertemuan</div>
+    </div>
+    <div class="fase-badge badge-belum">belum</div>
+  </a>
+
+  <!-- FASE 3 -->
+  <a class="fase-card" href="fase3.html">
+    <div class="fase-icon" style="background:#EAFAF1">📘</div>
+    <div class="fase-info">
+      <div class="fase-num">FASE 3</div>
+      <div class="fase-title">konsonan akhir & diftong</div>
+      <div class="fase-desc">-b -d -k -l -m -n -r -s -t -ng<br>diftong ai au · imbuhan · 20 pertemuan</div>
+    </div>
+    <div class="fase-badge badge-belum">belum</div>
+  </a>
+
+  <!-- FASE 4 -->
+  <a class="fase-card" href="fase4.html">
+    <div class="fase-icon" style="background:#FFF8E1">🎓</div>
+    <div class="fase-info">
+      <div class="fase-num">FASE 4</div>
+      <div class="fase-title">kluster & cerita</div>
+      <div class="fase-desc">bra cra dra fra gra kra pra sta tra<br>cerita pendek · 20 pertemuan</div>
+    </div>
+    <div class="fase-badge badge-belum">belum</div>
+  </a>
+
+  <!-- FASE 5 -->
+  <a class="fase-card" href="fase5.html">
+    <div class="fase-icon" style="background:#F3E5F5">🏆</div>
+    <div class="fase-info">
+      <div class="fase-num">FASE 5</div>
+      <div class="fase-title">membaca mandiri</div>
+      <div class="fase-desc">tanda baca · kosakata · cerita panjang<br>30 pertemuan</div>
+    </div>
+    <div class="fase-badge badge-belum">belum</div>
+  </a>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips">
+  <div class="tips-title">💡 tips penggunaan</div>
+  <div class="tips-item"><span>🎤</span><span>gunakan <strong>mode interaktif</strong> di Chrome untuk pengalaman terbaik</span></div>
+  <div class="tips-item"><span>📱</span><span>bisa dipakai di HP, tablet, dan laptop</span></div>
+  <div class="tips-item"><span>🎚️</span><span>pilih <strong>sensitifitas</strong> sesuai kemampuan anak</span></div>
+  <div class="tips-item"><span>✅</span><span>tombol <strong>guru</strong> tersedia sebagai override manual</span></div>
+  <div class="tips-item"><span>📋</span><span>selesaikan fase 1 dulu sebelum lanjut ke fase berikutnya</span></div>
+</div>
+
+</body>
+</html>
