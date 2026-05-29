@@ -4673,7 +4673,7 @@ function intStartListen(){
 
   intSR.onend=()=>{
     // Restart segera setelah result - jangan tunggu lama
-    if(intRunning&&intCurIdx<intCurEls.length&&!intEval){
+    if(intRunning&&intCurIdx<intCurEls.length){
       setTimeout(()=>{try{intSR.start();}catch(e){}},100);
     }
   };
