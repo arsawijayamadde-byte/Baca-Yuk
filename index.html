@@ -4713,7 +4713,11 @@ async function intProsesTokens(heardArr){
   }else{
     const r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
     setStatusTxt(r);
-    intSpeak(r,1.0);
+    try{
+      const _u=new SpeechSynthesisUtterance(r);
+      _u.lang='id-ID';_u.rate=0.9;_u.pitch=1.1;
+      window.speechSynthesis.speak(_u);
+    }catch(e){}
     intEval=false;
   }
 }
