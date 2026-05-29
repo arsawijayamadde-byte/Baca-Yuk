@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>baca yuk! — level 1</title>
+<title>baca yuk! — fase 1</title>
 <style>
 :root{
   --primary:#E74C3C;
@@ -328,6 +328,68 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
   padding-right:36px;
 }
 .wl-select:focus{border-color:#FF6B6B}
+
+/* ══ KARAOKE UNDERLINE ══ */
+.kalimat-box.interaktif-mode {
+  cursor:default;
+}
+.kalimat-box.interaktif-mode .kalimat-hint {
+  display:none;
+}
+.kal-words {
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  padding:4px 0;
+}
+.kal-word {
+  font-size:24px;font-weight:800;color:#333;
+  position:relative;padding-bottom:6px;
+  transition:all .2s;
+}
+.kal-word::after {
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;
+  height:3px;border-radius:2px;
+  background:transparent;
+  transition:all .25s ease;
+}
+.kal-word.kw-active {
+  color:#FF4757;
+  transform:scale(1.08);
+}
+.kal-word.kw-active::after {
+  background:#FF6B6B;
+  box-shadow:0 2px 8px rgba(255,107,107,.4);
+}
+.kal-word.kw-done {
+  color:#2D9B4B;
+}
+.kal-word.kw-done::after {
+  background:#6BCB77;
+}
+.kal-word.kw-idle {
+  color:#aaa;
+}
+
+/* Baris kata juga dapat underline di mode interaktif */
+.baris.int-baris-active .bkata {
+  position:relative;
+}
+.baris.int-baris-active .bkata.int-word-active {
+  color:#FF4757 !important;
+  font-weight:900 !important;
+}
+.baris.int-baris-active .bkata.int-word-active::after {
+  content:'';
+  position:absolute;bottom:-3px;left:0;right:0;
+  height:3px;border-radius:2px;
+  background:#FF6B6B;
+}
+.baris.int-baris-active .bkata.int-word-done::after {
+  content:'';
+  position:absolute;bottom:-3px;left:0;right:0;
+  height:3px;border-radius:2px;
+  background:#6BCB77;
+}
 </style>
 </head>
 <body>
@@ -344,13 +406,12 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 
     <div style="font-size:13px;font-weight:900;color:#333;margin:14px 0 6px">📚 pilih materi:</div>
     <select id="wl-fase" class="wl-select" onchange="updateFaseInfo()">
-      <option value="1">level 1</option>
-      <option value="2">level 2</option>
-      <option value="3">level 3</option>
-      <option value="4">level 4</option>
-      <option value="5">level 5</option>
+      <option value="1">fase 1</option>
+      <option value="2">fase 2</option>
+      <option value="3">fase 3</option>
+      <option value="4">fase 4</option>
+      <option value="5">fase 5</option>
     </select>
-    <div id="fase-info" style="font-size:11px;color:#aaa;margin-top:6px;padding:6px 10px;background:#FFF9F0;border-radius:10px;line-height:1.6"></div>
 
     <div style="font-size:13px;font-weight:900;color:#333;margin:14px 0 0">pilih mode belajar:</div>
     <button class="wl-mode-btn wm-biasa" id="btn-biasa" onclick="hideSens();wlMulai('normal')">
@@ -419,14 +480,14 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 
 <div class="top-nav">
   <div class="logo">📖</div>
-  <div><div class="appname">baca yuk! — level 1</div><div class="appsub">suku kata terbuka · 29 pertemuan</div></div>
+  <div><div class="appname">baca yuk! — fase 1</div><div class="appsub">suku kata terbuka · 29 pertemuan</div></div>
   <span id="nav-nama" style="font-size:13px;font-weight:900;color:#FF8E53;margin-left:4px"></span>
   <button class="star-badge" onclick="goHome()">⭐ 0</button>
 </div>
 <div id="beranda" style="padding:16px;display:none">
   <div class="hero">
     <div class="hero-emoji">📖</div>
-    <h1>baca yuk! — level 1</h1>
+    <h1>baca yuk! — fase 1</h1>
     <p>suku kata terbuka · 29 pertemuan</p>
   </div><div class="unit-card">
     <div class="unit-title" style="color:#E74C3C">
@@ -4481,6 +4542,18 @@ function intActivateItem(idx){
 
   const item=intCurEls[idx];
   const prevItem=idx>0?intCurEls[idx-1]:null;
+  
+  // Tambah underline di bkata aktif untuk baris
+  if(item.type==='baris'&&item.bk){
+    // Reset semua bkata di baris ini
+    if(item.el){
+      item.el.querySelectorAll('.bkata').forEach(function(bk){
+        bk.classList.remove('int-word-active','int-word-done');
+      });
+      item.el.classList.add('int-baris-active');
+      item.bk.classList.add('int-word-active');
+    }
+  }
 
   // Elemen sebelumnya → done (kalau beda elemen)
   if(prevItem&&prevItem.el!==item.el){
@@ -4946,7 +5019,7 @@ window.wlMulai = function(mode){
   localStorage.setItem('lastFase', fase);
   localStorage.setItem('lastNama', nama);
 
-  // Kalau bukan level 1, redirect ke file fase yang sesuai
+  // Kalau bukan fase 1, redirect ke file fase yang sesuai
   if(fase !== '1' && FASE_URLS[fase]){
     // Simpan nama dan mode ke sessionStorage dulu
     sessionStorage.setItem('pendingNama', nama);
@@ -4968,6 +5041,130 @@ window.wlMulai = function(mode){
     if(ni) ni.value = lastNama;
   }
 })();
+
+
+// ══ KARAOKE UNDERLINE ══════════════════════════════════════════
+
+// Override intActivateHal untuk kalimat - render per kata dengan underline
+var _origIntActivateHal = window.intActivateHal || intActivateHal;
+
+function buildKalimatKaraoke(halEl, pno, hno){
+  // Ambil semua kalimat box di halaman ini
+  var kalBoxes = halEl.querySelectorAll('.kalimat-box');
+  if(!kalBoxes.length) return false;
+
+  kalBoxes.forEach(function(box){
+    var p = box.querySelector('p');
+    if(!p) return;
+
+    var teks = p.textContent.trim();
+    var words = teks.replace(/[.!?]/g,'').trim().split(/\s+/).filter(function(w){ return w; });
+
+    if(words.length === 0) return;
+
+    // Replace <p> dengan kal-words
+    var html = '<div class="kal-words" id="kalwords_'+pno+'_'+hno+'">';
+    words.forEach(function(w, i){
+      html += '<span class="kal-word kw-idle" data-word="'+w+'" data-idx="'+i+'">'+w+'</span>';
+    });
+    html += '</div>';
+
+    p.outerHTML = html;
+    box.classList.add('interaktif-mode');
+  });
+
+  return true;
+}
+
+// Aktifkan kata berikutnya di kalimat
+var kalWordIdx = 0;
+var kalWordEls = [];
+
+function kalActivateWord(idx){
+  kalWordIdx = idx;
+  kalWordEls.forEach(function(el, i){
+    el.classList.remove('kw-active','kw-done','kw-idle');
+    if(i < idx) el.classList.add('kw-done');
+    else if(i === idx) el.classList.add('kw-active');
+    else el.classList.add('kw-idle');
+  });
+
+  if(idx < kalWordEls.length){
+    kalWordEls[idx].scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+
+// Patch intActivateHal untuk tambah karaoke di hal 5
+var _patchedActivateHal = false;
+function patchKaraokeHal5(pno, hno){
+  if(hno !== '5') return;
+
+  var halEl = document.querySelector('#prt-'+pno+' [data-hal="5"]');
+  if(!halEl) return;
+
+  // Build karaoke
+  buildKalimatKaraoke(halEl, pno, hno);
+
+  // Kumpulkan kal-word elements untuk queue
+  var wordEls = halEl.querySelectorAll('.kal-word');
+  if(!wordEls.length) return;
+
+  kalWordEls = Array.from(wordEls);
+
+  // Tambahkan ke intCurEls sebelum queue diproses
+  // Override buildQueue untuk hal 5 dengan karaoke
+  var kalItems = [];
+  kalWordEls.forEach(function(el){
+    kalItems.push({
+      t: el.dataset.word,
+      type: 'kalimat-karaoke',
+      el: el
+    });
+  });
+
+  // Inject ke intCurEls
+  intCurEls = kalItems;
+  intCurIdx = 0;
+
+  // Aktifkan kata pertama
+  kalActivateWord(0);
+}
+
+// Override intActivateHal
+var __origIntActivateHal = intActivateHal;
+window.intActivateHal = function(pno, hno){
+  __origIntActivateHal(pno, hno);
+  if(hno === '5'){
+    setTimeout(function(){
+      patchKaraokeHal5(pno, hno);
+    }, 500);
+  }
+};
+
+// Override intActivateItem untuk karaoke
+var __origIntActivateItem = intActivateItem;
+window.intActivateItem = function(idx){
+  __origIntActivateItem(idx);
+
+  // Kalau item adalah kalimat-karaoke, aktifkan underline
+  if(intCurEls[idx] && intCurEls[idx].type === 'kalimat-karaoke'){
+    kalActivateWord(idx);
+  }
+};
+
+// Override intDoBenar untuk update karaoke visual
+var __origIntDoBenar = intDoBenar;
+window.intDoBenar = async function(){
+  // Update kata sebelumnya jadi done
+  if(intCurEls[intCurIdx] && intCurEls[intCurIdx].type === 'kalimat-karaoke'){
+    var el = intCurEls[intCurIdx].el;
+    if(el){
+      el.classList.remove('kw-active');
+      el.classList.add('kw-done');
+    }
+  }
+  await __origIntDoBenar();
+};
 
 </script>
 </body>
