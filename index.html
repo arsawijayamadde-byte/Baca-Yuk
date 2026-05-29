@@ -481,7 +481,7 @@ window.setSens=function(level){
     b.classList.toggle('sens-active', b.dataset.sens===level);
   });
   // Auto mulai setelah pilih sensitifitas
-  wlMulai('interaktif');
+  if(window.wlMulai) window.wlMulai('interaktif');
 }
 </script>
 </head>
@@ -4343,7 +4343,7 @@ window.setSens=function(level){
     b.classList.toggle('sens-active', b.dataset.sens===level);
   });
   // Auto mulai setelah pilih sensitifitas
-  wlMulai('interaktif');
+  if(window.wlMulai) window.wlMulai('interaktif');
 }
 
 
