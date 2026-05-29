@@ -4744,8 +4744,8 @@ function intStartListen(){
         return;
       }
     }
-    // Final result tapi tidak match → naik counter
-    if(!matched && fins.length>0){
+    // Result tapi tidak match → naik counter
+    if(!matched && (fins.length>0 || itm.length>0)){
       window._salahCount=(window._salahCount||0)+1;
       if(window._salahCount>=5){
         window._salahCount=0;
