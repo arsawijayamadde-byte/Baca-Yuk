@@ -4738,7 +4738,10 @@ function intStartListen(){
         }
         if(!intEval){
           window._salahCount=(window._salahCount||0)+1;
-          setMaskot('salah','');
+          var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
+          setMaskot('salah',_r);
+          setStatusTxt(_r);
+          try{var _u=new SpeechSynthesisUtterance(_r);_u.lang='id-ID';_u.rate=0.9;window.speechSynthesis.speak(_u);}catch(e){}
           intStopListen();
           if(window._salahCount>=5){
             window._salahCount=0;
