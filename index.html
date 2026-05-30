@@ -4739,15 +4739,13 @@ function intStartListen(){
       if(!target)return;
 
       // Cek dari interim (lebih cepat di HP)
-      if(interim){
+      if(interim&&intMatch(interim,target)){
         if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
-        if(intMatch(interim,target)){
-          console.log('👂 interim match:',interim,'→',target);
-          window.intProsesTokens([interim]);
-          return;
-        } else {
-          _resetIntTimer();
-        }
+        console.log('👂 interim match:',interim,'→',target);
+        window.intProsesTokens([interim]);
+        return;
+      } else if(interim){
+        _resetIntTimer();
       }
       // Cek dari final
       if(heard&&!intEval){
