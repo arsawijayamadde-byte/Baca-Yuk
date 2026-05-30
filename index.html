@@ -4736,7 +4736,6 @@ function intStartListen(){
             return;
           }
         }
-        // Final tidak match → alur salah langsung (bypass intEval lock)
         if(!intEval){
           window._salahCount=(window._salahCount||0)+1;
           setMaskot('salah','');
