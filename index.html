@@ -4820,6 +4820,7 @@ async function intProsesTokens(heardArr){
   // maskot benar
   if(ok){
     window._salahCount=0;
+    window._matchDone=true;setTimeout(function(){window._matchDone=false;},1500);
     setMaskot('benar','hebat! jawabanmu benar!');
   }
   if(ok){
