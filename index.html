@@ -4705,11 +4705,11 @@ function intStartListen(){
   showMicBar();
 
   // Timer: kalau 3 detik tidak ada match → trigger salah (fix iPhone delay)
-  window._intTimer=window._intTimer||null;
+  var _intTimer=null;
   function _resetIntTimer(){
-    if(window._intTimer) clearTimeout(window._intTimer);
-    window._intTimer=setTimeout(function(){
-      window._intTimer=null;
+    if(_intTimer) clearTimeout(_intTimer);
+    _intTimer=setTimeout(function(){
+      _intTimer=null;
       if(!intEval && intRunning){
         console.log('⏱️ timeout 3s → salah');
         var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
@@ -4796,6 +4796,7 @@ function intStartListen(){
 
 function intStopListen(){
   intRunning=false;
+  if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
   try{if(intSR)intSR.stop();}catch(e){}
   hideMicBar();
 }
