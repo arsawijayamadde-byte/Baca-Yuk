@@ -4796,10 +4796,24 @@ async function intProsesTokens(heardArr){
       intInitSR();intStartListen();
     }
   }else{
-    const r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
-    setStatusTxt(r);
-    intSpeak(r,1.0);
-    intEval=false;
+    window._salahCount=(window._salahCount||0)+1;
+    setMaskot('salah','');
+    intStopListen();
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    if(window._salahCount>=5){
+      window._salahCount=0;
+      setTimeout(function(){
+        setMaskot('tunggu','');
+        intEval=false; intRunning=false;
+        intInitSR(); intStartListen();
+      },1000);
+    } else {
+      setTimeout(function(){
+        setMaskot('tunggu','');
+        intEval=false; intRunning=false;
+        intInitSR(); intStartListen();
+      },800);
+    }
   }
 }
 
