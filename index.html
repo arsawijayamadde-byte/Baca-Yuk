@@ -4738,9 +4738,7 @@ function intStartListen(){
         }
         if(!intEval){
           window._salahCount=(window._salahCount||0)+1;
-          var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
-          setMaskot('salah',_r);
-          setStatusTxt(_r);
+          setMaskot('salah','');
           intStopListen();
           if(window._salahCount>=5){
             window._salahCount=0;
