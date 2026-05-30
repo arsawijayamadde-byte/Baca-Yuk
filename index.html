@@ -4727,6 +4727,7 @@ function intStartListen(){
       }
       // Cek dari final
       if(heard){
+        console.log('🔴 final heard:',heard,'target:',target);
         var words=heard.split(/\s+/).filter(function(w){return w.length>0;});
         for(var i=0;i<words.length;i++){
           if(intMatch(words[i],target)){
@@ -4796,24 +4797,10 @@ async function intProsesTokens(heardArr){
       intInitSR();intStartListen();
     }
   }else{
-    window._salahCount=(window._salahCount||0)+1;
-    setMaskot('salah','');
-    intStopListen();
-    try{ window.speechSynthesis.cancel(); }catch(e){}
-    if(window._salahCount>=5){
-      window._salahCount=0;
-      setTimeout(function(){
-        setMaskot('tunggu','');
-        intEval=false; intRunning=false;
-        intInitSR(); intStartListen();
-      },1000);
-    } else {
-      setTimeout(function(){
-        setMaskot('tunggu','');
-        intEval=false; intRunning=false;
-        intInitSR(); intStartListen();
-      },800);
-    }
+    const r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
+    setStatusTxt(r);
+    intSpeak(r,1.0);
+    intEval=false;
   }
 }
 
