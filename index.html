@@ -4726,7 +4726,7 @@ function intStartListen(){
         return;
       }
       // Cek dari final
-      if(heard){
+      if(heard&&!intEval){
         console.log('🔴 final heard:',heard,'target:',target);
         var words=heard.split(/\s+/).filter(function(w){return w.length>0;});
         for(var i=0;i<words.length;i++){
