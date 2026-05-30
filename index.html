@@ -4704,7 +4704,25 @@ function intStartListen(){
   intRunning=true;
   showMicBar();
 
+  // Timer: kalau 3 detik tidak ada match → trigger salah (fix iPhone delay)
+  var _intTimer=null;
+  function _resetIntTimer(){
+    if(_intTimer) clearTimeout(_intTimer);
+    _intTimer=setTimeout(function(){
+      if(!intEval && intRunning){
+        console.log('⏱️ timeout 3s → salah');
+        var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
+        setMaskot('salah',_r); setStatusTxt(_r);
+        try{var _u=new SpeechSynthesisUtterance(_r);_u.lang='id-ID';_u.rate=0.9;window.speechSynthesis.speak(_u);}catch(e){}
+        intStopListen();
+        window._salahCount=(window._salahCount||0)+1;
+        if(window._salahCount>=5){ window._salahCount=0; setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },1000); }
+        else { setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },800); }
+      }
+    },3000);
+  }
   intSR.onresult=function(e){
+    _resetIntTimer();
     var heard='',interim='';
     for(var i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal)
