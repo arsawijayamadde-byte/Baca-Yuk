@@ -4700,6 +4700,7 @@ function intInitSR(){
 }
 
 function intStartListen(){
+  window._matchDone=false;
   if(intRunning||!intSR)return;
   intRunning=true;
   showMicBar();
@@ -4739,13 +4740,15 @@ function intStartListen(){
       if(!target)return;
 
       // Cek dari interim (lebih cepat di HP)
-      if(interim&&intMatch(interim,target)){
+      if(interim){
         if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
-        console.log('👂 interim match:',interim,'→',target);
-        window.intProsesTokens([interim]);
-        return;
-      } else if(interim){
-        _resetIntTimer();
+        if(intMatch(interim,target)){
+          console.log('👂 interim match:',interim,'→',target);
+          window.intProsesTokens([interim]);
+          return;
+        } else {
+          _resetIntTimer();
+        }
       }
       // Cek dari final
       if(heard&&!intEval){
