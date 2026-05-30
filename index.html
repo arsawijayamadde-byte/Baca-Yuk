@@ -4710,7 +4710,7 @@ function intStartListen(){
     if(_intTimer) clearTimeout(_intTimer);
     _intTimer=setTimeout(function(){
       _intTimer=null;
-      if(!intEval && intRunning){
+      if(!intEval && intRunning && !window._matchDone){
         console.log('⏱️ timeout 3s → salah');
         var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
         setMaskot('salah',_r); setStatusTxt(_r);
