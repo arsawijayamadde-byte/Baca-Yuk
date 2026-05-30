@@ -4736,7 +4736,18 @@ function intStartListen(){
             return;
           }
         }
-        window.intProsesTokens([heard]);
+        // Final tidak match → alur salah langsung (bypass intEval lock)
+        if(!intEval){
+          window._salahCount=(window._salahCount||0)+1;
+          setMaskot('salah','');
+          intStopListen();
+          if(window._salahCount>=5){
+            window._salahCount=0;
+            setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },1000);
+          } else {
+            setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },800);
+          }
+        }
       }
     }
   };
