@@ -4723,6 +4723,7 @@ function intStartListen(){
     },3000);
   }
   intSR.onresult=function(e){
+    if(!intEval) _resetIntTimer();
     var heard='',interim='';
     for(var i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal)
@@ -4738,16 +4739,10 @@ function intStartListen(){
       if(!target)return;
 
       // Cek dari interim (lebih cepat di HP)
-      if(interim){
-        if(intMatch(interim,target)){
-          console.log('👂 interim match:',interim,'→',target);
-          if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
-          window.intProsesTokens([interim]);
-          return;
-        } else {
-          // Ada suara tapi tidak match → mulai timer 3 detik
-          if(!window._intTimer) _resetIntTimer();
-        }
+      if(interim&&intMatch(interim,target)){
+        console.log('👂 interim match:',interim,'→',target);
+        window.intProsesTokens([interim]);
+        return;
       }
       // Cek dari final
       if(heard&&!intEval){
