@@ -5229,6 +5229,7 @@ function patchKaraokeHal5(pno, hno){
   kalWordEls.forEach(function(el){
     kalItems.push({
       t: el.dataset.word,
+      target: el.dataset.word,
       type: 'kalimat-karaoke',
       el: el
     });
