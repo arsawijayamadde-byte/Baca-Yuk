@@ -4712,7 +4712,9 @@ function intStartListen(){
     window._intTimer=setTimeout(function(){
       window._intTimer=null;
       if(!intEval && intRunning && !window._matchDone){
-        console.log('⏱️ timeout 3s → salah');
+        var _curTarget=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'?';
+        var _curType=intCurEls[intCurIdx]?intCurEls[intCurIdx].type:'?';
+        console.log('⏱️ timeout 3s → salah | target='+_curTarget+' type='+_curType+' intEval='+intEval);
         var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
         setMaskot('salah',_r); setStatusTxt(_r);
         try{var _u=new SpeechSynthesisUtterance(_r);_u.lang='id-ID';_u.rate=0.9;window.speechSynthesis.speak(_u);}catch(e){}
