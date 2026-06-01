@@ -4913,13 +4913,8 @@ function intMatch(heard,target){
     if(heard===target)return true;
     // Heard boleh 1 huruf lebih panjang HANYA kalau huruf tambahan adalah pengulangan vokal
     // ba → baa ✅ | ba → bab ✅ | ca → cab ❌
-    if(heard.length===3&&heard.startsWith(target)){
-      const extra=heard[2];
-      const vowels='aiueo';
-      // Huruf extra harus sama dengan huruf terakhir target (perpanjangan)
-      if(extra===target[1])return true; // baa, caa
-      return false;
-    }
+    if(heard.length===3&&heard.startsWith(target))return true;
+    if(heard.startsWith(target))return true;
     return false;
   }
 
