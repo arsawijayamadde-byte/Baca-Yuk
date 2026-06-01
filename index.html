@@ -4763,7 +4763,7 @@ function intStartListen(){
             return;
           }
         }
-        if(!intEval){
+        if(!intEval&&!window._matchDone){
           window._salahCount=(window._salahCount||0)+1;
           var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
           setMaskot('salah',_r);
