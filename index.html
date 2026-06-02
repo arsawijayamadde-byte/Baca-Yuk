@@ -986,12 +986,12 @@ function intActivateItem(idx){
   intCurIdx=idx;
   if(idx>=intCurEls.length){intDoneHal();return;}
   const item=intCurEls[idx];
-  if(item.type==='kal'){console.log('kal handler triggered, target:'+item.target);
-    // Highlight kalimat aktif
+  var curItem=intCurEls[idx];
+  if(curItem&&curItem.type==='kal'){console.log('kal handler triggered, target:'+curItem.target);
     intCurEls.forEach(function(x){if(x.el)x.el.style.border='2px dashed #ccc';});
-    if(item.el)item.el.style.border='3px solid #1565C0';
+    if(curItem.el)curItem.el.style.border='3px solid #1565C0';
     // Speak kalimat dulu
-    speak(item.target);
+    speak(curItem.target);
     // Start SR setelah TTS selesai
     setTimeout(function(){
       intEval=false;
