@@ -925,7 +925,7 @@ function intActivateHal(pno,hno){
     if(mb)mb.style.display='flex';
     const kals=halEl.querySelectorAll('.kalimat-box');
     if(kals.length>0){
-      intCurEls=Array.from(kals).map(function(el){return {t:el.querySelector('p').textContent.trim(),el:el};});
+      intCurEls=Array.from(kals).map(function(el){var t=el.querySelector('p').textContent.trim();return {t:t,target:t,type:'kal',el:el};});
       intCurIdx=0;
       intActivateItem(0);
     }
@@ -985,6 +985,20 @@ function intActivateHal(pno,hno){
 function intActivateItem(idx){
   intCurIdx=idx;
   if(idx>=intCurEls.length){intDoneHal();return;}
+  const item=intCurEls[idx];
+  if(item.type==='kal'){
+    // Highlight kalimat aktif
+    intCurEls.forEach(function(x){if(x.el)x.el.style.border='2px dashed #ccc';});
+    if(item.el)item.el.style.border='3px solid #1565C0';
+    // Speak kalimat dulu
+    speak(item.target);
+    // Start SR setelah TTS selesai
+    setTimeout(function(){
+      intEval=false;
+      intStartListen();
+    },2000);
+    return;
+  }
 
   const item=intCurEls[idx];
   const prevItem=idx>0?intCurEls[idx-1]:null;
