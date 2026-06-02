@@ -780,7 +780,7 @@ function showHal(n){
   curHal=n;
   const page=document.getElementById('prt-'+curPrt);
   page.querySelectorAll('.hal').forEach(h=>h.classList.remove('show'));
-  page.querySelector('[data-hal="'+n+'"]').classList.add('show');
+  var halEl=page.querySelector('.hal-wrap [data-hal="'+n+'"]');if(halEl)halEl.classList.add('show');
   updDots();updNav();
   window.scrollTo(0,0);
 }
