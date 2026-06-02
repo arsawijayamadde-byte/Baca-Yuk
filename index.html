@@ -773,8 +773,8 @@ function openPrt(no){
   if(btn&&btn.classList.contains('locked'))return;
   document.getElementById('beranda').style.display='none';
   document.querySelectorAll('.prt-page').forEach(p=>p.classList.remove('show'));
-  document.getElementById('prt-'+no).classList.add('show');
-  document.getElementById('bnav').classList.remove('hide');
+  var el=document.getElementById('prt-'+no);if(el)el.classList.add('show');else return;
+  var bn=document.getElementById('bnav');if(bn)bn.classList.remove('hide');
   curPrt=no;curHal=1;
   showHal(1);
   window.scrollTo(0,0);
