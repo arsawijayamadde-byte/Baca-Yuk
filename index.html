@@ -796,7 +796,7 @@ function showHal(n){
   var mb=document.getElementById('int-mic-bar');
   if(n===5){
     if(mb)mb.style.display='flex';
-    setTimeout(function(){intActivateHal(curPrt,5);},500);
+    setTimeout(function(){intActivateHal(curPrt,'5');},500);
   } else {
     intStopListen();
     if(mb)mb.style.display='none';
@@ -919,8 +919,19 @@ function intActivateHal(pno,hno){
   if(!halEl)return;
 
   // Kumpulkan semua elemen yang perlu diaktifkan sesuai urutan
+  if(hno==='5'){
+    // Kalimat baca - aktifkan SR
+    var mb=document.getElementById('int-mic-bar');
+    if(mb)mb.style.display='flex';
+    const kals=halEl.querySelectorAll('.kalimat-box');
+    if(kals.length>0){
+      intCurEls=Array.from(kals).map(function(el){return {t:el.querySelector('p').textContent.trim(),el:el};});
+      intCurIdx=0;
+      intActivateItem(0);
+    }
+    return;
+  }
   if(hno==='2'||hno==='3'){
-    // Suku kata → berikan class tok-idle semua, aktifkan pertama
     const sukus=halEl.querySelectorAll('.suku');
     sukus.forEach(el=>{
       el.classList.add('tok-idle');
