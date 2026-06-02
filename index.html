@@ -919,19 +919,8 @@ function intActivateHal(pno,hno){
   if(!halEl)return;
 
   // Kumpulkan semua elemen yang perlu diaktifkan sesuai urutan
-  if(hno==='5'){console.log('hal5 triggered prt:'+pno);
-    // Kalimat baca - aktifkan SR
-    var mb=document.getElementById('int-mic-bar');
-    if(mb)mb.style.display='flex';
-    const kals=halEl.querySelectorAll('.kalimat-box');
-    console.log('kals found:'+kals.length);if(kals.length>0){
-      intCurEls=Array.from(kals).map(function(el){var t=el.querySelector('p').textContent.trim();return {t:t,target:t,type:'kal',el:el};});
-      intCurIdx=0;
-      console.log('calling intActivateItem 0');intActivateItem(0);
-    }
-    return;
-  }
   if(hno==='2'||hno==='3'){
+    // Suku kata → berikan class tok-idle semua, aktifkan pertama
     const sukus=halEl.querySelectorAll('.suku');
     sukus.forEach(el=>{
       el.classList.add('tok-idle');
@@ -964,7 +953,7 @@ function intActivateHal(pno,hno){
       });
     });
   }
-  else if(hno==='5'){console.log('hal5 triggered prt:'+pno);
+  else if(hno==='5'){
     const kal=halEl.querySelector('.kalimat-box');
     if(kal){
       kal.onclick=null;
@@ -985,22 +974,8 @@ function intActivateHal(pno,hno){
 function intActivateItem(idx){
   intCurIdx=idx;
   if(idx>=intCurEls.length){intDoneHal();return;}
-  const item=intCurEls[idx];
-  console.log('item type:'+item.type);if(item&&item.type==='kal'){console.log('kal handler triggered, target:'+item.target);
-    intCurEls.forEach(function(x){if(x.el)x.el.style.border='2px dashed #ccc';});
-    if(item.el)item.el.style.border='3px solid #1565C0';
-    // Speak kalimat dulu
-    speak(item.target);
-    // Start SR setelah TTS selesai
-    setTimeout(function(){
-      intEval=false;
-      intRunning=false;
-      intInitSR();
-      intStartListen();
-    },2000);
-    return;
-  }
 
+  const item=intCurEls[idx];
   const prevItem=idx>0?intCurEls[idx-1]:null;
   
   // Tambah underline di bkata aktif untuk baris
@@ -1032,7 +1007,8 @@ function intActivateItem(idx){
   }
 
   // Aktifkan elemen saat ini
-  item.el.classList.remove('tok-idle','tok-done');
+  item.el.classList.remove('tok-idle','tok-done','tok-active');
+  void item.el.offsetWidth; // force reflow untuk animasi
   item.el.classList.add('tok-active');
 
   // Scroll ke elemen aktif
@@ -1074,33 +1050,11 @@ function intInitSR(){
 }
 
 function intStartListen(){
-  window._matchDone=false;
   if(intRunning||!intSR)return;
   intRunning=true;
   showMicBar();
 
-  // Timer: kalau 3 detik tidak ada match → trigger salah (fix iPhone delay)
-  window._intTimer=null;
-  function _resetIntTimer(){
-    if(window._intTimer) clearTimeout(window._intTimer);
-    window._intTimer=setTimeout(function(){
-      window._intTimer=null;
-      if(!intEval && intRunning && !window._matchDone){
-        var _curTarget=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'?';
-        var _curType=intCurEls[intCurIdx]?intCurEls[intCurIdx].type:'?';
-        console.log('⏱️ timeout 3s → salah | target='+_curTarget+' type='+_curType+' intEval='+intEval);
-        var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
-        setMaskot('salah',_r); setStatusTxt(_r);
-        try{var _u=new SpeechSynthesisUtterance(_r);_u.lang='id-ID';_u.rate=0.9;window.speechSynthesis.speak(_u);}catch(e){}
-        intStopListen();
-        window._salahCount=(window._salahCount||0)+1;
-        if(window._salahCount>=5){ window._salahCount=0; setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },1000); }
-        else { setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },800); }
-      }
-    },3000);
-  }
   intSR.onresult=function(e){
-    if(!intEval) _resetIntTimer();
     var heard='',interim='';
     for(var i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal)
@@ -1116,39 +1070,19 @@ function intStartListen(){
       if(!target)return;
 
       // Cek dari interim (lebih cepat di HP)
-      if(interim){
-        if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
-        if(intMatch(interim,target)){
-          console.log('👂 interim match:',interim,'→',target);
-          window.intProsesTokens([interim]);
-          return;
-        } else {
-          _resetIntTimer();
-        }
+      if(interim&&intMatch(interim,target)){
+        console.log('👂 interim match:',interim,'→',target);
+        window.intProsesTokens([interim]);
+        return;
       }
       // Cek dari final
-      if(heard&&!intEval){
-        console.log('🔴 final heard:',heard,'target:',target);
+      if(heard){
         var words=heard.split(/\s+/).filter(function(w){return w.length>0;});
         for(var i=0;i<words.length;i++){
           if(intMatch(words[i],target)){
             console.log('👂 final match:',words[i],'→',target);
             window.intProsesTokens([words[i]]);
             return;
-          }
-        }
-        if(!intEval&&!window._matchDone){
-          window._salahCount=(window._salahCount||0)+1;
-          var _r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
-          setMaskot('salah',_r);
-          setStatusTxt(_r);
-          try{var _u=new SpeechSynthesisUtterance(_r);_u.lang='id-ID';_u.rate=0.9;window.speechSynthesis.speak(_u);}catch(e){}
-          intStopListen();
-          if(window._salahCount>=5){
-            window._salahCount=0;
-            setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },1500);
-          } else {
-            setTimeout(function(){ setMaskot('tunggu',''); intEval=false; intRunning=false; intInitSR(); intStartListen(); },1500);
           }
         }
       }
@@ -1178,7 +1112,6 @@ function intStartListen(){
 
 function intStopListen(){
   intRunning=false;
-  if(window._intTimer){clearTimeout(window._intTimer);window._intTimer=null;}
   try{if(intSR)intSR.stop();}catch(e){}
   hideMicBar();
 }
@@ -1202,12 +1135,10 @@ async function intProsesTokens(heardArr){
   // maskot benar
   if(ok){
     window._salahCount=0;
-    intStopListen();
-    window._matchDone=true;
     setMaskot('benar','hebat! jawabanmu benar!');
   }
   if(ok){
-    setStatusTxt('');
+    intStopListen();setStatusTxt('');
     await intDoBenar();
     intEval=false;
     if(intCurIdx<intCurEls.length){
@@ -1215,10 +1146,30 @@ async function intProsesTokens(heardArr){
       intInitSR();intStartListen();
     }
   }else{
+    // Counter salah
+    window._salahCount=(window._salahCount||0)+1;
     const r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
     setStatusTxt(r);
-    intSpeak(r,1.0);
+    // Ucapkan rayuan tanpa cancel SR
+    try{
+      const _u=new SpeechSynthesisUtterance(r);
+      _u.lang='id-ID';_u.rate=0.9;_u.pitch=1.1;
+      window.speechSynthesis.speak(_u);
+    }catch(e){}
     intEval=false;
+
+    // Cutoff 5x salah - reset total dan restart SR bersih
+    if(window._salahCount>=5){
+      window._salahCount=0;
+      intStopListen();
+      intEval=false;
+      setStatusTxt('ayo semangat! coba lagi ya!');
+      setTimeout(function(){
+        setStatusTxt('');
+        intInitSR();
+        intStartListen();
+      },1500);
+    }
   }
 }
 
@@ -1285,10 +1236,8 @@ function intMatch(heard,target){
   // Suku kata 2 huruf (ba,ca,bi,dll)
   if(target.length===2){
     if(heard===target)return true;
-    // Heard boleh 1 huruf lebih panjang HANYA kalau huruf tambahan adalah pengulangan vokal
-    // ba → baa ✅ | ba → bab ✅ | ca → cab ❌
-    if(heard.length===3&&heard.startsWith(target))return true;
     if(heard.startsWith(target))return true;
+    if(heard[0]===target[0]&&Math.abs(heard.length-target.length)<=1)return true;
     return false;
   }
 
