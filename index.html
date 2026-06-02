@@ -797,7 +797,7 @@ function updDots(){
   if(lbl)lbl.textContent=labels[curHal-1]||'';
 }
 
-function updNav(){var prev=document.getElementById("btn-prev");var next=document.getElementById("btn-next");var ctr=document.getElementById("nav-ctr");if(!prev||!next||!ctr)return;
+function updNav(){if(!document.getElementById("btn-prev")||!document.getElementById("btn-next")||!document.getElementById("nav-ctr"))return;
   const prev=document.getElementById('btn-prev');
   const next=document.getElementById('btn-next');
   const ctr=document.getElementById('nav-ctr');
