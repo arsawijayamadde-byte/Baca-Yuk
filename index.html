@@ -797,15 +797,7 @@ function updDots(){
   if(lbl)lbl.textContent=labels[curHal-1]||'';
 }
 
-function updNav(){if(!document.getElementById("btn-prev")||!document.getElementById("btn-next")||!document.getElementById("nav-ctr"))return;
-  const prev=document.getElementById('btn-prev');
-  const next=document.getElementById('btn-next');
-  const ctr=document.getElementById('nav-ctr');
-  prev.className=curHal>1?'nbtn nsecondary':'nbtn ndisabled';
-  next.className='nbtn nprimary';
-  next.textContent=curHal<TOT_HAL?'lanjut →':'selesai ✓';
-  ctr.innerHTML='<strong>'+curHal+'</strong>/'+TOT_HAL;
-}
+function updNav(){var p=document.getElementById("btn-prev");var n=document.getElementById("btn-next");var ct=document.getElementById("nav-ctr");if(!p||!n||!ct)return;p.className=curHal>1?"nbtn nsecondary":"nbtn ndisabled";n.className="nbtn nprimary";n.textContent=curHal<TOT_HAL?"lanjut →":"selesai ✓";ct.innerHTML="<strong>"+curHal+"</strong>/"+TOT_HAL;}
 
 function prevHal(){if(curHal>1)showHal(curHal-1);}
 
