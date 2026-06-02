@@ -586,7 +586,7 @@ window.setSens=function(level){
 
 <div class="top-nav">
   <div class="logo">📖</div>
-  <div><div class="appname">baca yuk! — fase 1 </div><div class="appsub">suku kata terbuka · 29 pertemuan</div></div>
+  <div><div class="appname">baca yuk! — fase 1 </div><div class="appsub">suku kata terbuka · 20 pertemuan</div></div>
   <span id="nav-nama" style="font-size:13px;font-weight:900;color:#FF8E53;margin-left:4px"></span>
   <button class="star-badge" onclick="goHome()">⭐ 0</button>
 </div>
@@ -594,7 +594,7 @@ window.setSens=function(level){
   <div class="hero">
     <div class="hero-emoji">📖</div>
     <h1>baca yuk! — fase 1 </h1>
-    <p>suku kata terbuka · 29 pertemuan</p>
+    <p>suku kata terbuka · 20 pertemuan</p>
   </div><div class="unit-card">
     <div class="unit-title" style="color:#E74C3C">
       <div style="width:20px;height:20px;border-radius:50%;background:#E74C3C;display:inline-flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0">📚</div>
@@ -776,6 +776,7 @@ function openPrt(no){
   window.scrollTo(0,0);
 }
 
+function goHal(prt,hal){if(prt===curPrt)showHal(hal);}
 function showHal(n){
   curHal=n;
   const page=document.getElementById('prt-'+curPrt);
@@ -1408,7 +1409,7 @@ function intLevenshtein(a,b){
 
 // ══ FASE SELECTOR ══════════════════════════════════════
 var FASE_INFO = {
-  '1': 'ba ca ka la ma pa sa ta · ng ny kh sy · 29 pertemuan',
+  '1': 'ba ca ka la ma pa sa ta · ng ny kh sy · 20 pertemuan',
   '2': 'bi ci di fi... bu cu du... be ce de... bo co do... · 40 pertemuan',
   '3': 'konsonan akhir -b -d -k -l -m -n -r -s -t -ng · diftong ai au · 20 pertemuan',
   '4': 'kluster bra cra dra fra · cerita pendek · 20 pertemuan',
