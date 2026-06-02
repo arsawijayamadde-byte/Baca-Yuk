@@ -986,7 +986,6 @@ function intActivateItem(idx){
   intCurIdx=idx;
   if(idx>=intCurEls.length){intDoneHal();return;}
   const item=intCurEls[idx];
-  var curItem=intCurEls[idx];
   if(curItem&&curItem.type==='kal'){console.log('kal handler triggered, target:'+curItem.target);
     intCurEls.forEach(function(x){if(x.el)x.el.style.border='2px dashed #ccc';});
     if(curItem.el)curItem.el.style.border='3px solid #1565C0';
@@ -1002,7 +1001,6 @@ function intActivateItem(idx){
     return;
   }
 
-  const item=intCurEls[idx];
   const prevItem=idx>0?intCurEls[idx-1]:null;
   
   // Tambah underline di bkata aktif untuk baris
