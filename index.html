@@ -924,10 +924,10 @@ function intActivateHal(pno,hno){
     var mb=document.getElementById('int-mic-bar');
     if(mb)mb.style.display='flex';
     const kals=halEl.querySelectorAll('.kalimat-box');
-    if(kals.length>0){
+    console.log('kals found:'+kals.length);if(kals.length>0){
       intCurEls=Array.from(kals).map(function(el){var t=el.querySelector('p').textContent.trim();return {t:t,target:t,type:'kal',el:el};});
       intCurIdx=0;
-      intActivateItem(0);
+      console.log('calling intActivateItem 0');intActivateItem(0);
     }
     return;
   }
@@ -986,7 +986,7 @@ function intActivateItem(idx){
   intCurIdx=idx;
   if(idx>=intCurEls.length){intDoneHal();return;}
   const item=intCurEls[idx];
-  if(item&&item.type==='kal'){console.log('kal handler triggered, target:'+item.target);
+  console.log('item type:'+item.type);if(item&&item.type==='kal'){console.log('kal handler triggered, target:'+item.target);
     intCurEls.forEach(function(x){if(x.el)x.el.style.border='2px dashed #ccc';});
     if(item.el)item.el.style.border='3px solid #1565C0';
     // Speak kalimat dulu
