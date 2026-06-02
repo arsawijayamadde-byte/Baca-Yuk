@@ -995,6 +995,8 @@ function intActivateItem(idx){
     // Start SR setelah TTS selesai
     setTimeout(function(){
       intEval=false;
+      intRunning=false;
+      intInitSR();
       intStartListen();
     },2000);
     return;
