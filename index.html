@@ -426,6 +426,12 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 }
 </style>
 
+<div id="bnav" class="hide" style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #eee;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:200;max-width:600px;margin:0 auto">
+  <button id="btn-prev" class="nbtn nsecondary" onclick="prevHal()">← prev</button>
+  <span id="nav-ctr" style="font-size:13px;font-weight:700;color:#888">1/6</span>
+  <button id="btn-next" class="nbtn nprimary" onclick="nextHal()">lanjut →</button>
+</div>
+
 <script>
 /* Sens functions - harus load sebelum HTML onclick */
 
