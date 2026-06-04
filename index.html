@@ -1092,12 +1092,18 @@ function intStartListen(){
       // Cek dari final
       if(heard){
         var words=heard.split(/\s+/).filter(function(w){return w.length>0;});
+        var matched=false;
         for(var i=0;i<words.length;i++){
           if(intMatch(words[i],target)){
             console.log('👂 final match:',words[i],'→',target);
             window.intProsesTokens([words[i]]);
+            matched=true;
             return;
           }
+        }
+        if(!matched){
+          console.log('❌ salah — heard:['+heard+'] | target:['+target+']');
+          window.intProsesTokens([heard]);
         }
       }
     }
