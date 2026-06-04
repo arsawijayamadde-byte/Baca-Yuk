@@ -429,6 +429,7 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
 .suku,.tap-suku{display:inline-block!important;width:auto!important;min-width:0!important;background:#FFE0B2!important;border-radius:10px!important;padding:6px 14px!important;font-size:18px!important;font-weight:900!important;color:#E65100!important;cursor:pointer!important;border:2px solid #FFB300!important}
 .baris-baca{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin-bottom:8px!important}
 .bk,.tap-bk{display:inline-block!important;width:auto!important;background:#E3F2FD!important;border-radius:8px!important;padding:6px 12px!important;font-size:16px!important;font-weight:700!important;color:#1565C0!important;cursor:pointer!important}
+.kw-active{background:#FFE066;border-radius:4px;padding:0 3px;font-weight:900;color:#E65100}
 </style>
 
 <div id="bnav" class="hide" style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #eee;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:200;max-width:600px;margin:0 auto">
@@ -1007,8 +1008,18 @@ function intActivateItem(idx){
 
   // Aktifkan elemen saat ini
   item.el.classList.remove('tok-idle','tok-done','tok-active');
-  void item.el.offsetWidth; // force reflow untuk animasi
+  void item.el.offsetWidth;
   item.el.classList.add('tok-active');
+
+  // Untuk kalimat - highlight kata aktif di dalam kalimat-box
+  if(item.type==='kalimat'){
+    var p=item.el.querySelector('p');
+    if(p){
+      var kata=item.target;
+      var txt=p.textContent;
+      p.innerHTML=txt.replace(new RegExp('\\b'+kata+'\\b','i'),'<span class="kw-active">'+kata+'</span>');
+    }
+  }
 
   // Scroll ke elemen aktif
   item.el.scrollIntoView({behavior:'smooth',block:'center'});
