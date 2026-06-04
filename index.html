@@ -1185,8 +1185,8 @@ async function intProsesTokens(heardArr){
       intInitSR();intStartListen();
     }
   }else{
-    // Counter salah
     window._salahCount=(window._salahCount||0)+1;
+    console.log('❌ salah — heard:['+heardArr.join(',')+'] | target:['+target+'] | salahCount:'+window._salahCount);
     const r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
     setStatusTxt(r);
     // Ucapkan rayuan tanpa cancel SR
