@@ -795,7 +795,10 @@ function showHal(n){
   if(page)page.querySelectorAll('.hal').forEach(h=>h.classList.remove('show'));
   var halEl=page.querySelector('.hal-wrap [data-hal="'+n+'"]');if(halEl)halEl.classList.add('show');
   var mb=document.getElementById('int-mic-bar');
-  if(n===5){
+  if(n===3){
+    if(mb)mb.style.display='flex';
+    setTimeout(function(){intActivateHal(curPrt,'3');},500);
+  } else if(n===5){
     if(mb)mb.style.display='flex';
     setTimeout(function(){intActivateHal(curPrt,'5');},500);
   } else {
