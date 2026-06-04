@@ -933,11 +933,11 @@ function intActivateHal(pno,hno){
     });
     // Baris → tok-idle juga
     if(hno==='3'){
-      halEl.querySelectorAll('.baris').forEach(baris=>{
+      halEl.querySelectorAll('.baris-baca').forEach(baris=>{
         baris.classList.add('tok-idle');
         baris.onclick=null;
-        // Pecah per bkata
-        baris.querySelectorAll('.bkata').forEach(bk=>{
+        // Pecah per bk (suku kata dalam baris)
+        baris.querySelectorAll('.bk').forEach(bk=>{
           intCurEls.push({el:baris,target:bk.textContent.trim(),type:'baris',bk});
         });
       });
