@@ -263,7 +263,7 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive;overflow-x:hidden}
   .tok.done { font-size: 14px !important; min-width: 38px !important; min-height: 38px !important; }
 
   /* Mic bar mobile */
-  #int-mic-bar { bottom: 72px; padding: 7px 14px; font-size: 12px; max-width: 90vw; }
+  #int-mic-bar { bottom: 130px!important; padding: 7px 14px; font-size: 12px; max-width: 90vw; }
 
   /* Reward mobile */
   #int-reward .tok-rbox { padding: 20px 28px; }
@@ -1208,7 +1208,9 @@ async function intProsesTokens(heardArr){
 }
 
 async function intDoBenar(){
-  // Mark item saat ini done
+  window._matchDone=true;
+  if(window._intTimer)clearTimeout(window._intTimer);
+  window._salahCount=0;
   const item=intCurEls[intCurIdx];
   item.el.classList.remove('tok-active');
   item.el.classList.add('tok-done');
