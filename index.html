@@ -915,7 +915,7 @@ function intActivateHal(pno,hno){
   intStopListen();
   intCurEls=[]; intCurIdx=0; intEval=false;
 
-  const halEl=document.querySelector('#prt-'+pno+' [data-hal="'+hno+'"]');
+  const halEl=document.querySelector('#prt-'+pno+' .hal-wrap .hal[data-hal="'+hno+'"]');
   if(!halEl)return;
 
   // Kumpulkan semua elemen yang perlu diaktifkan sesuai urutan
