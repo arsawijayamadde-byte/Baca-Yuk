@@ -1007,6 +1007,7 @@ function intActivateItem(idx){
   }
 
   // Aktifkan elemen saat ini
+  console.log('activateItem idx:'+idx+' target:'+(item?item.target:'?')+' type:'+(item?item.type:'?'));
   item.el.classList.remove('tok-idle','tok-done','tok-active');
   void item.el.offsetWidth;
   item.el.classList.add('tok-active');
@@ -1131,6 +1132,9 @@ function intStartListen(){
       }
       var r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
       setMaskot('salah',r);
+      console.log('❌ timer salah target:'+( intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'?'));
+      // TTS rayuan
+      speak(r);
     }
   },3000);
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
@@ -1146,6 +1150,7 @@ function intStopListen(){
 }
 
 async function intProsesTokens(heardArr){
+  console.log('prosesTokens heard:'+heardArr.join(','),' target:'+( intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'?'));
   if(intEval)return;
   intEval=true; // lock di sini
   const target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
