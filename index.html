@@ -954,15 +954,14 @@ function intActivateHal(pno,hno){
     });
   }
   else if(hno==='5'){
-    const kal=halEl.querySelector('.kalimat-box');
-    if(kal){
+    halEl.querySelectorAll('.kalimat-box').forEach(function(kal){
       kal.onclick=null;
-      // Pecah kalimat per kata
-      const teks=kal.querySelector('p').textContent.replace(/[.,!?]/g,'').trim();
-      teks.split(/\s+/).forEach(w=>{
+      kal.classList.add('tok-idle');
+      var teks=kal.querySelector('p').textContent.replace(/[.,!?]/g,'').trim();
+      teks.split(/\s+/).forEach(function(w){
         if(w)intCurEls.push({el:kal,target:w,type:'kalimat'});
       });
-    }
+    });
   }
 
   if(intCurEls.length===0)return;
@@ -1106,12 +1105,31 @@ function intStartListen(){
     }
   };
 
+  // Timer 3 detik untuk iPhone
+  if(window._intTimer)clearTimeout(window._intTimer);
+  window._matchDone=false;
+  window._intTimer=setTimeout(function(){
+    if(!window._matchDone&&intRunning&&intCurEls.length>0){
+      console.log('⏱ timer 3s — tidak ada suara');
+      var target=intCurEls[intCurIdx]?intCurEls[intCurIdx].target:'';
+      window._salahCount=(window._salahCount||0)+1;
+      if(window._salahCount>=5){
+        window._salahCount=0;
+        intCurIdx=0;
+        intActivateItem(0);
+      }
+      var r=INT_RAYUAN[Math.floor(Math.random()*INT_RAYUAN.length)];
+      setMaskot('salah',r);
+    }
+  },3000);
   try{intSR.start();}catch(e){intRunning=false;hideMicBar();}
 }
 
 
 function intStopListen(){
   intRunning=false;
+  if(window._intTimer)clearTimeout(window._intTimer);
+  window._matchDone=true;
   try{if(intSR)intSR.stop();}catch(e){}
   hideMicBar();
 }
